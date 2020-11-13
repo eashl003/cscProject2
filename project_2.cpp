@@ -89,8 +89,6 @@ void declareTerritories(ifstream& file) {
     
 }
     
-
-
 class Client {
 
     private: 
@@ -224,15 +222,16 @@ void loadSaleReps(ifstream& file) {
     int saleRepId, territoryId, amount;
     char comma, comma1;
     // while loop to store objects
+    SalesRep * sr;
     while(file.good()) {
         // assign values to variables
         file >> saleRepId >> comma >> territoryId >> comma1 >> amount;
+        sr = new SalesRep(saleRepId, territoryId, amount);
         for(int i = 0; i < 29; i++) {
-            // create instance of Territory obj
-            SalesRep * sr = new SalesRep(saleRepId, territoryId, amount);
             mapSaleReps.insert(pair<int, SalesRep*> (i, sr)); // insert object into map
         }
     }
+    
     map<int, SalesRep*>::iterator it = mapSaleReps.begin();
     while(it != mapSaleReps.end()) {
         int num = it->first;
@@ -240,53 +239,21 @@ void loadSaleReps(ifstream& file) {
         cout << num << " : " << *saleR << endl;
         it++;
     }
-} // end of loadTransaction
-
-    // function that creates a vector of territories from the text file for salerep
-    void declareSaleReps(ifstream& file) {
-        // variables for SaleRep
-        int saleRepId;
-        int territoryId;
-        int amount;
-        char comma;
-        char comma1;
-        
-        vector<SalesRep> salesRepVec;
-        
-        while(file.good()) {
-            file >> saleRepId >> comma >> territoryId >> comma1 >> amount;
-            //long saleRepIdInt = stol(saleRepId, &sz);
-            SalesRep s(saleRepId, territoryId, amount);
-            salesRepVec.push_back(s);
-        }
-        vector<SalesRep>::iterator it;
-        for(it=salesRepVec.begin();it!=salesRepVec.end();++it) {
-           cout<<(*it).getSaleRepId()<<" "<<(*it).getTerritoryId()<<" "<<(*it).getAmount()<< endl;
-        }
-    } // end of declareSaleReps
+} // end of loadSaleReps
 
 
 int main () {
     ifstream territoryFile("territory.txt");
     ifstream saleRepFile("salerep.txt");
     ifstream trxFile("transaction.txt");
-
-   
-    
    //declareTerritories(territoryFile);
    //loadTransactions(trxFile);
    loadSaleReps(saleRepFile);
 
-   // vector<Territory>::iterator it;
-    //for(it=territories.begin();it!=territories.end();++it) {
-      //  cout<<(*it).territoryId<<" "<<(*it).type<<endl;
-    //}
+    cout << "-----------------------------------" << endl;
     
+    cout << "-----------------------------------" << endl;
 
-    cout << "-----------------------------------" << endl;
-    //declareSaleReps(saleRepFile);
-    cout << "-----------------------------------" << endl;
-    //declareTransactions(trxFile);
 
     return 0;
 }
