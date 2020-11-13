@@ -179,7 +179,6 @@ void loadTransactions(ifstream& file) {
         cout << num << " : " << *transaction << endl;
         it++;
     }
-
 } // end of loadTransaction
 
 class SalesRep {
@@ -210,6 +209,38 @@ class SalesRep {
         }
 
 }; // end of SalesRep class
+
+
+// should it be const?
+ostream & operator<<(ostream &os, SalesRep& sr) {
+    os  << sr.getSaleRepId() << ", " << sr.getTerritoryId() << ", " << sr.getAmount() << endl;
+    return os;
+}
+
+map<int, SalesRep *> mapSaleReps;
+
+void loadSaleReps(ifstream& file) {
+    // declare variables for Territory
+    int saleRepId, territoryId, amount;
+    char comma, comma1;
+    // while loop to store objects
+    while(file.good()) {
+        // assign values to variables
+        file >> saleRepId >> comma >> territoryId >> comma1 >> amount;
+        for(int i = 0; i < 29; i++) {
+            // create instance of Territory obj
+            SalesRep * sr = new SalesRep(saleRepId, territoryId, amount);
+            mapSaleReps.insert(pair<int, SalesRep*> (i, sr)); // insert object into map
+        }
+    }
+    map<int, SalesRep*>::iterator it = mapSaleReps.begin();
+    while(it != mapSaleReps.end()) {
+        int num = it->first;
+        SalesRep * saleR = it -> second;
+        cout << num << " : " << *saleR << endl;
+        it++;
+    }
+} // end of loadTransaction
 
     // function that creates a vector of territories from the text file for salerep
     void declareSaleReps(ifstream& file) {
@@ -242,8 +273,9 @@ int main () {
 
    
     
-   declareTerritories(territoryFile);
-   loadTransactions(trxFile);
+   //declareTerritories(territoryFile);
+   //loadTransactions(trxFile);
+   loadSaleReps(saleRepFile);
 
    // vector<Territory>::iterator it;
     //for(it=territories.begin();it!=territories.end();++it) {
