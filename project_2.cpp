@@ -15,8 +15,7 @@ class Territory {
     public:
         int territoryId;
         string type;
-        
-
+    
     public:
     Territory();
 
@@ -50,22 +49,20 @@ class Territory {
     }
 
 }; // end of Territory class
-    // make a global variable for map to store territories
-     ostream & operator<<(ostream &os, const Territory& t) {
-	    os << "territoryId:" << t.territoryId << "type:" << t.type << endl;
-        return os;
-    }
+    
+ostream & operator<<(ostream &os, const Territory& t) {
+    os << "territoryId:" << t.territoryId << "type:" << t.type << endl;
+    return os;
+}
 
-    map<int, Territory *> mapTerritories;
-    // function that creates a vector of territories from the text file, return the vector
-    void declareTerritories(ifstream& file) {
+map<int, Territory *> mapTerritories;
+// function that creates a vector of territories from the text file, return the vector
+void declareTerritories(ifstream& file) {
     // variables for territory 
     int territoryId;
     char comma;
     string type = "";
-    //vector<Territory> territoryVec;
 
-    //vector<Territory> territories;
     while(file.good()) {
         file >> territoryId >> comma >> type;
         //Territory t(territoryId, type);
@@ -75,23 +72,23 @@ class Territory {
             mapTerritories.insert(pair<int ,Territory *> (i, t));
             
         }
+    } // while
 
-        } // while
-    
-        map<int, Territory *>::iterator it = mapTerritories.begin();
+    map<int, Territory *>::iterator it = mapTerritories.begin();
 
-        while(it != mapTerritories.end()) {
-            int num = it->first;
+    while(it != mapTerritories.end()) {
+        int num = it->first;
 
-            Territory *ter = it->second;
+        Territory *ter = it->second;
 
-            cout << num << " : " << *ter << endl;
+        cout << num << " : " << *ter << endl;
 
-            it++;
+        it++;
 
-        }
-    
     }
+    
+}
+    
 
 
 class Client {
@@ -146,13 +143,44 @@ class Transaction {
         return clientId;
     }
     // get transaction type 
-    int getTrxTyep() { 
+    int getTrxType() { 
         return trxType;
     }
     int getAmount() {
         return amount;
     }
 }; // end of Transaction class
+// should it be const?
+ostream & operator<<(ostream &os, Transaction& t) {
+    os  << t.getTrxId() << ", " << t.getSaleRepId() << ", " << t.getClientId() << ", " << t.getTrxType() << ", " << t.getAmount() << endl;
+    return os;
+}
+
+map<int, Transaction *> mapTransaction;
+
+void loadTransactions(ifstream& file) {
+    // declare variables for Territory
+    int trxId, saleRepId, clientId, trxType, amount;
+    char comma, comma1, comma2, comma3;
+    // while loop to store objects
+    while(file.good()) {
+        // assign values to variables
+        file >> trxId >> comma >> saleRepId >> comma1 >> clientId >> comma2 >> trxType >> comma3 >> amount;
+        for(int i = 0; i < 29; i++) {
+            // create instance of Territory obj
+            Transaction * t = new Transaction(trxId, saleRepId, clientId,trxType, amount);
+            mapTransaction.insert(pair<int, Transaction*> (i, t)); // insert object into map
+        }
+    }
+    map<int, Transaction*>::iterator it = mapTransaction.begin();
+    while(it != mapTransaction.end()) {
+        int num = it->first;
+        Transaction *transaction = it -> second;
+        cout << num << " : " << *transaction << endl;
+        it++;
+    }
+
+} // end of loadTransaction
 
 class SalesRep {
 
@@ -183,30 +211,6 @@ class SalesRep {
 
 }; // end of SalesRep class
 
-
-
-    // function that transaction a vector of transactions from the text file for transactions.txt
-    void declareTransactions(ifstream& file) {
-        int trxId; // transaction id
-        int saleRepId;
-        int clientId;
-        int trxType; // transaction type
-        int amount;
-        char comma;
-        char comma1;
-        char comma2;
-        char comma3;
-        vector<Transaction> transactionsVec;
-        while(file.good()) {
-            file >> trxId >> comma >> saleRepId >> comma1 >> clientId >> comma2 >> trxType >> comma3 >> amount;
-            Transaction t(trxId, saleRepId, clientId, trxType, amount);
-            transactionsVec.push_back(t);
-        }
-        vector<Transaction>::iterator it;
-        for(it=transactionsVec.begin();it!=transactionsVec.end();++it) {
-           cout<<(*it).trxId<<" "<<(*it).saleRepId<<" "<<(*it).clientId<<" "<<(*it).trxType<<" "<<(*it).amount<<endl;
-        }
-    }
     // function that creates a vector of territories from the text file for salerep
     void declareSaleReps(ifstream& file) {
         // variables for SaleRep
@@ -239,6 +243,7 @@ int main () {
    
     
    declareTerritories(territoryFile);
+   loadTransactions(trxFile);
 
    // vector<Territory>::iterator it;
     //for(it=territories.begin();it!=territories.end();++it) {
