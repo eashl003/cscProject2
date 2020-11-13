@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <map>
+// this verison prints out territory map
 
 using namespace std;
 // git hub
