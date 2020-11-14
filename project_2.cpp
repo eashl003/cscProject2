@@ -52,7 +52,7 @@ class Territory {
 }; // end of Territory class
     
 ostream & operator<<(ostream &os, const Territory& t) {
-    os << "territoryId: " << t.territoryId << "type: " << t.type << endl;
+    os << " territoryId: " << t.territoryId << " type: " << t.type << endl;
     return os;
 }
 
@@ -67,8 +67,8 @@ void loadTerritories(ifstream& file) {
     int i = 0;
    
    // if(file.good()) {
-        while(getline(file, line)) {
-            file >> territoryId >> comma >> type;
+        while(  file >> territoryId >> comma >> type) {
+          
             //cin.getline(territoryId,  5, ',');
             //cin.getline(type, 7);
             // convert to string and int 
