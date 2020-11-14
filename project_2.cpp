@@ -142,23 +142,12 @@ void loadTransactions(ifstream& file) {
     // declare variables for Territory
     int trxId, saleRepId, clientId, trxType, amount;
     char comma, comma1, comma2, comma3;
+    int i = 0;
     // while loop to store objects
-    while(file.good()) {
-        // assign values to variables
-        file >> trxId >> comma >> saleRepId >> comma1 >> clientId >> comma2 >> trxType >> comma3 >> amount;
-        for(int i = 0; i < 29; i++) {
-            // create instance of Territory obj
-            Transaction * t = new Transaction(trxId, saleRepId, clientId,trxType, amount);
-            mapTransaction.insert(pair<int, Transaction*> (i, t)); // insert object into map
-            
-        }
-    }
-    map<int, Transaction*>::iterator it = mapTransaction.begin();
-    while(it != mapTransaction.end()) {
-        int num = it->first;
-        Transaction *transaction = it -> second;
-        cout << num << " : " << *transaction << endl;
-        it++;
+    while(file >> trxId >> comma >> saleRepId >> comma1 >> clientId >> comma2 >> trxType >> comma3 >> amount) {
+        Transaction * t = new Transaction(trxId, saleRepId, clientId,trxType, amount);
+        mapTransaction.insert(pair<int, Transaction*> (i, t)); // insert object into map
+        i++; 
     }
 } // end of loadTransaction
 
@@ -230,25 +219,8 @@ int main () {
     ifstream saleRepFile("salerep.txt");
     ifstream trxFile("transaction.txt");
    loadTerritories(territoryFile);
-    map<int, Territory *>::iterator it = mapTerritories.begin();
-
-    while(it != mapTerritories.end()) {
-        int num = it->first;
-
-        Territory *ter = it->second;
-
-        cout << num << " : " << *ter << endl;
-
-        it++;
-
-    }
-   //loadTransactions(trxFile);
+   loadTransactions(trxFile);
    //loadSaleReps(saleRepFile);
-
-    cout << "-----------------------------------" << endl;
-    
-    cout << "-----------------------------------" << endl;
-
 
     return 0;
 }
