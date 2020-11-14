@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 #include <map>
-// this verison prints out territory map
+// this verison prints out all three but as one obj
 
 using namespace std;
 // git hub
