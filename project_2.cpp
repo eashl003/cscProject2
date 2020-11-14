@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <sstream>
 // this verison prints out all three but as one obj
 
 using namespace std;
@@ -51,42 +52,40 @@ class Territory {
 }; // end of Territory class
     
 ostream & operator<<(ostream &os, const Territory& t) {
-    os << "territoryId:" << t.territoryId << "type:" << t.type << endl;
+    os << "territoryId: " << t.territoryId << "type: " << t.type << endl;
     return os;
 }
 
 map<int, Territory *> mapTerritories;
 // function that creates a vector of territories from the text file, return the vector
-void declareTerritories(ifstream& file) {
+void loadTerritories(ifstream& file) {
     // variables for territory 
+    string line;
     int territoryId;
     char comma;
-    string type = "";
-
-    while(file.good()) {
-        file >> territoryId >> comma >> type;
-        //Territory t(territoryId, type);
-        //territoryVec.push_back(t);
-        Territory * t = new Territory(territoryId, type);
-        for( int i = 0; i < 6; i++) {
-            mapTerritories.insert(pair<int ,Territory *> (i, t));
+    string type; // account for null terminator maybe?
+    int i = 0;
+   
+   // if(file.good()) {
+        while(getline(file, line)) {
+            file >> territoryId >> comma >> type;
+            //cin.getline(territoryId,  5, ',');
+            //cin.getline(type, 7);
+            // convert to string and int 
+            // int territoryIdInt = atoi(territoryId);
+            // string typeStr(type);
+            //for each line create a new object
+            Territory * t = new Territory(territoryId, type);
             
-        }
-    } // while
-
-    map<int, Territory *>::iterator it = mapTerritories.begin();
-
-    while(it != mapTerritories.end()) {
-        int num = it->first;
-
-        Territory *ter = it->second;
-
-        cout << num << " : " << *ter << endl;
-
-        it++;
-
-    }
+            //for( int i = 0; i < 6; i++) {
+                //Territory * t = new Territory(territoryIdInt, typeStr);
+            mapTerritories.insert(pair<int ,Territory *> (i, t));
+            i++;
+                
     
+        }
+   // }
+
 }
     
 class Client {
@@ -168,6 +167,7 @@ void loadTransactions(ifstream& file) {
             // create instance of Territory obj
             Transaction * t = new Transaction(trxId, saleRepId, clientId,trxType, amount);
             mapTransaction.insert(pair<int, Transaction*> (i, t)); // insert object into map
+            
         }
     }
     map<int, Transaction*>::iterator it = mapTransaction.begin();
@@ -246,9 +246,21 @@ int main () {
     ifstream territoryFile("territory.txt");
     ifstream saleRepFile("salerep.txt");
     ifstream trxFile("transaction.txt");
-   //declareTerritories(territoryFile);
+   loadTerritories(territoryFile);
+    map<int, Territory *>::iterator it = mapTerritories.begin();
+
+    while(it != mapTerritories.end()) {
+        int num = it->first;
+
+        Territory *ter = it->second;
+
+        cout << num << " : " << *ter << endl;
+
+        it++;
+
+    }
    //loadTransactions(trxFile);
-   loadSaleReps(saleRepFile);
+   //loadSaleReps(saleRepFile);
 
     cout << "-----------------------------------" << endl;
     
