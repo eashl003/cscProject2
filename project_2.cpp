@@ -59,33 +59,16 @@ ostream & operator<<(ostream &os, const Territory& t) {
 map<int, Territory *> mapTerritories;
 // function that creates a vector of territories from the text file, return the vector
 void loadTerritories(ifstream& file) {
-    // variables for territory 
-    string line;
+    string line; 
     int territoryId;
     char comma;
-    string type; // account for null terminator maybe?
+    string type; 
     int i = 0;
-   
-   // if(file.good()) {
-        while(  file >> territoryId >> comma >> type) {
-          
-            //cin.getline(territoryId,  5, ',');
-            //cin.getline(type, 7);
-            // convert to string and int 
-            // int territoryIdInt = atoi(territoryId);
-            // string typeStr(type);
-            //for each line create a new object
-            Territory * t = new Territory(territoryId, type);
-            
-            //for( int i = 0; i < 6; i++) {
-                //Territory * t = new Territory(territoryIdInt, typeStr);
-            mapTerritories.insert(pair<int ,Territory *> (i, t));
-            i++;
-                
-    
-        }
-   // }
-
+    while(  file >> territoryId >> comma >> type) {
+        Territory * t = new Territory(territoryId, type);
+        mapTerritories.insert(pair<int ,Territory *> (i, t));
+        i++;
+    }
 }
     
 class Client {
