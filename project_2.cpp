@@ -195,13 +195,12 @@ void loadSaleReps(ifstream& file) {
     char comma, comma1;
     // while loop to store objects
     SalesRep * sr;
-    while(file.good()) {
-        // assign values to variables
-        file >> saleRepId >> comma >> territoryId >> comma1 >> amount;
+    int i = 0;
+    while(file >> saleRepId >> comma >> territoryId >> comma1 >> amount) {
+        // assign values to variable
         sr = new SalesRep(saleRepId, territoryId, amount);
-        for(int i = 0; i < 29; i++) {
-            mapSaleReps.insert(pair<int, SalesRep*> (i, sr)); // insert object into map
-        }
+        mapSaleReps.insert(pair<int, SalesRep*> (i, sr)); // insert object into map   
+        i++;
     }
     
     map<int, SalesRep*>::iterator it = mapSaleReps.begin();
@@ -218,9 +217,9 @@ int main () {
     ifstream territoryFile("territory.txt");
     ifstream saleRepFile("salerep.txt");
     ifstream trxFile("transaction.txt");
-   loadTerritories(territoryFile);
-   loadTransactions(trxFile);
-   //loadSaleReps(saleRepFile);
+   //loadTerritories(territoryFile);
+   //loadTransactions(trxFile);
+   loadSaleReps(saleRepFile);
 
     return 0;
 }
