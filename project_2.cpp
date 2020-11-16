@@ -7,6 +7,7 @@
 #include <map>
 #include <sstream>
 #include <unordered_map>
+#include <stdio.h>
 // this verison prints out all three but as one obj
 
 using namespace std;
@@ -291,12 +292,13 @@ void clientOutput(vector<int> ci, vector<double> ca) {
 // TEST 
 // territory id and territory amount 
 void territoryOutput(vector<int> ti, vector<double> ta) {
-
+    
 }
 
 
 // END TEST
 int main () {
+    freopen ("client_output.txt","w",stdout);
     ifstream territoryFile("territory.txt");
     ifstream saleRepFile("salerep.txt");
     ifstream trxFile("transaction.txt");
@@ -309,5 +311,7 @@ int main () {
     calcTransaction(typeVec, amountVec);
     cout << "client output: " << endl;
     clientOutput(clientIdVec, clientsVec); 
+
+    fclose(stdout);
     return 0;
 }
