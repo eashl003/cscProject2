@@ -60,6 +60,7 @@ ostream & operator<<(ostream &os, const Territory& t) {
 }
 
 map<int, Territory *> mapTerritories;
+vector<int> territoryIdVec;
 // function that creates a vector of territories from the text file, return the vector
 void loadTerritories(ifstream& file) {
     string line; 
@@ -70,7 +71,12 @@ void loadTerritories(ifstream& file) {
     while(  file >> territoryId >> comma >> type) {
         Territory * t = new Territory(territoryId, type);
         mapTerritories.insert(pair<int ,Territory *> (i, t));
+        territoryIdVec.push_back(territoryId);
         i++;
+    }
+
+    for (auto i: territoryIdVec) {
+        cout << (i) << endl;
     }
 }
     
@@ -160,6 +166,8 @@ void loadTransactions(ifstream& file) {
         i++; 
     }
 
+
+
 } // end of loadTransaction
 
 class SalesRep {
@@ -224,7 +232,8 @@ void loadSaleReps(ifstream& file) {
 } // end of loadSaleReps
 
 
-vector<double> clientsVec;
+vector<double> clientsVec; // will store clients' amount
+vector<double> territoryAmountVec; 
 void calcTransaction(vector<int> type, vector<double> amount) {
     // iterate through vectors and calculate the amount depending on type
     double territoryAmount = 0, saleRepAmount = 0, clientsAmount = 0;
@@ -235,36 +244,43 @@ void calcTransaction(vector<int> type, vector<double> amount) {
             saleRepAmount = amount[i] * 1.10; // calculate for salerep
             clientsAmount = amount[i] * 1; // calculate for client
             clientsVec.push_back(clientsAmount);
+            territoryAmountVec.push_back(territoryAmount);
         } else if ( type[i] == 3) {
             territoryAmount = amount[i] * 1; // calcualte territory
             saleRepAmount = amount[i] * 1; // calculate for salerep
             clientsAmount = amount[i] * 1; // calculate for client
             clientsVec.push_back(clientsAmount);
+            territoryAmountVec.push_back(territoryAmount);
         } else if (type[i] == 4) {
             territoryAmount = amount[i] * 1; // calcualte territory
             saleRepAmount = amount[i] * 1.25; // calculate for salerep
             clientsAmount = amount[i] * 1; // calculate for client
             clientsVec.push_back(clientsAmount);
+            territoryAmountVec.push_back(territoryAmount);
         } else if ( type[i] == 5) {
             territoryAmount = amount[i] * 1; // calcualte territory
             saleRepAmount = amount[i] * 0; // calculate for salerep
             clientsAmount = amount[i] * 0; // calculate for client
             clientsVec.push_back(clientsAmount);
+            territoryAmountVec.push_back(territoryAmount);
         } else if ( type[i] == 7) {
             territoryAmount = amount[i] * 0; // calcualte territory
             saleRepAmount = amount[i] * .75; // calculate for salerep
             clientsAmount = amount[i] * 0; // calculate for client
             clientsVec.push_back(clientsAmount);
+            territoryAmountVec.push_back(territoryAmount);
         }
     }  
 
-    for (int i = 0; i < clientsVec.size(); i++) {
-        cout << clientsVec[i] << endl;
+    /*
+     for (int i = 0; i < territoryAmountVec.size(); i++) {
+        cout << "territory amount: " << territoryAmountVec[i] << endl;
     }
-   
+   */
 }
 
-// TEST 
+
+
 // direct output to client_output (clientID , client amount)
 void clientOutput(vector<int> ci, vector<double> ca) {
     for (int i = 0; i < ci.size(); i++) {
@@ -272,14 +288,20 @@ void clientOutput(vector<int> ci, vector<double> ca) {
     }
 
 }
+// TEST 
+// territory id and territory amount 
+void territoryOutput(vector<int> ti, vector<double> ta) {
+
+}
+
 
 // END TEST
-
 int main () {
     ifstream territoryFile("territory.txt");
     ifstream saleRepFile("salerep.txt");
     ifstream trxFile("transaction.txt");
-   //loadTerritories(territoryFile);
+    cout << "load territories :" << endl;
+    loadTerritories(territoryFile);
     loadTransactions(trxFile);
     //for (auto i : amountVec)
     //cout << (i) << endl;
