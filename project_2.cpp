@@ -288,6 +288,11 @@ void clientOutput(vector<int> ci, vector<double> ca) {
         cout << " client id is:" << ci[i] << " client amount is: " << ca[i] << endl;
     }
 
+    if(ca.size()==0){
+        cout<< "yes";
+    }else{cout<<"no";}
+
+
 }
 // TEST 
 // territory id and territory amount 
