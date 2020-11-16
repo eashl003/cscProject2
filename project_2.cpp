@@ -93,6 +93,22 @@ class Transaction {
         this -> amount = amount;
     }
 
+    // setters
+    void setTrxId() {
+        this -> trxId = trxId;
+    }
+    void setSaleRepId() {
+        this -> saleRepId = saleRepId;
+    }
+    void setClientId() {
+        this -> clientId = clientId;
+    }
+    void setTrxType() { 
+        this -> trxType = trxType;
+    }
+    void setAmount() {
+        this -> amount = amount;
+    }
     // getters 
     int getTrxId() {
         return trxId;
@@ -116,7 +132,7 @@ class Transaction {
 class Client : public Transaction {
 
     public:
-        //Client(int clientId, int amount);
+        Client(int clientId, int amount);
 
 }; // end of Client class
 // should it be const?
@@ -126,6 +142,8 @@ ostream & operator<<(ostream &os, Transaction& t) {
 }
 
 map<int, Transaction *> mapTransaction;
+vector<int> typeVec;  // test
+vector<double> amountVec; // test
 
 void loadTransactions(ifstream& file) {
     // declare variables for Territory
@@ -136,8 +154,11 @@ void loadTransactions(ifstream& file) {
     while(file >> trxId1 >> comma >> saleRepId1 >> comma1 >> clientId1 >> comma2 >> trxType1 >> comma3 >> amount1) {
         Transaction * t = new Transaction(trxId1, saleRepId1, clientId1,trxType1, amount1);
         mapTransaction.insert(pair<int, Transaction*> (i, t)); // insert object into map
+        typeVec.push_back(trxType1); //test
+        amountVec.push_back(amount1); //test
         i++; 
     }
+
 } // end of loadTransaction
 
 class SalesRep {
@@ -203,52 +224,45 @@ void loadSaleReps(ifstream& file) {
 
 // TEST
 vector<double> clientsVec;
-void calcTransaction(map<int, Transaction*> &t) {
-    int i = 0;
-
-    while(!t.empty()) {
-      
-        int client_Id = t.find(i)->second->getClientId();
- 
-        double clientsAmount;
-        int type = t.find(i)->second->getTrxType();
-        double amount = mapTransaction.find(i)->second->getAmount();
-        double territoryAmount, saleRepAmount;
-        if ((type == 1) || (type == 2) || type == 6) {
-            territoryAmount = amount * 1; // calcualte territory
-            saleRepAmount = amount * 1.10; // calculate for salerep
-            clientsAmount = amount * 1; // calculate for client
-            clientsVec.push_back(clientsAmount);
-        } else if ( type == 3) {
-            territoryAmount = amount * 1; // calcualte territory
-            saleRepAmount = amount * 1; // calculate for salerep
-            clientsAmount = amount * 1; // calculate for client
-            clientsVec.push_back(clientsAmount);
-        } else if (type == 4) {
-            territoryAmount = amount * 1; // calcualte territory
-            saleRepAmount = amount * 1.25; // calculate for salerep
-            clientsAmount = amount * 1; // calculate for client
-            clientsVec.push_back(clientsAmount);
-        } else if ( type == 5) {
-            territoryAmount = amount * 1; // calcualte territory
-            saleRepAmount = amount * 0; // calculate for salerep
-            clientsAmount = amount * 0; // calculate for client
-            clientsVec.push_back(clientsAmount);
-        } else if ( type == 7) {
-            territoryAmount = amount * 0; // calcualte territory
-            saleRepAmount = amount * .75; // calculate for salerep
-            clientsAmount = amount * 0; // calculate for client
-            clientsVec.push_back(clientsAmount);
-        }  
+void calcTransaction(vector<int> type, vector<double> amount) {
+    // iterate through vectors and calculate the amount depending on type
+    double territoryAmount = 0, saleRepAmount = 0, clientsAmount = 0;
     
-        i++;
-    }
- 
+    for (int i; i< amountVec.size(); i++) {
+        if ((type[i] == 1) || (type[i] == 2) || type[i] == 6) {
+            territoryAmount = amount[i] * 1.00; // calcualte territory
+            saleRepAmount = amount[i] * 1.10; // calculate for salerep
+            clientsAmount = amount[i] * 1; // calculate for client
+            clientsVec.push_back(clientsAmount);
+        } else if ( type[i] == 3) {
+            territoryAmount = amount[i] * 1; // calcualte territory
+            saleRepAmount = amount[i] * 1; // calculate for salerep
+            clientsAmount = amount[i] * 1; // calculate for client
+            clientsVec.push_back(clientsAmount);
+        } else if (type[i] == 4) {
+            territoryAmount = amount[i] * 1; // calcualte territory
+            saleRepAmount = amount[i] * 1.25; // calculate for salerep
+            clientsAmount = amount[i] * 1; // calculate for client
+            clientsVec.push_back(clientsAmount);
+        } else if ( type[i] == 5) {
+            territoryAmount = amount[i] * 1; // calcualte territory
+            saleRepAmount = amount[i] * 0; // calculate for salerep
+            clientsAmount = amount[i] * 0; // calculate for client
+            clientsVec.push_back(clientsAmount);
+        } else if ( type[i] == 7) {
+            territoryAmount = amount[i] * 0; // calcualte territory
+            saleRepAmount = amount[i] * .75; // calculate for salerep
+            clientsAmount = amount[i] * 0; // calculate for client
+            clientsVec.push_back(clientsAmount);
+        }
+    }  
+
     for (int i = 0; i < clientsVec.size(); i++) {
         cout << clientsVec[i] << endl;
     }
    
 }
+
 
 
 // END OF TEST
@@ -260,7 +274,9 @@ int main () {
     ifstream trxFile("transaction.txt");
    //loadTerritories(territoryFile);
     loadTransactions(trxFile);
+    //for (auto i : amountVec)
+    //cout << (i) << endl;
    //loadSaleReps(saleRepFile);
-    calcTransaction(mapTransaction);
+    calcTransaction(typeVec, amountVec);
     return 0;
 }
