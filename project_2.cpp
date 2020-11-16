@@ -144,7 +144,7 @@ ostream & operator<<(ostream &os, Transaction& t) {
 map<int, Transaction *> mapTransaction;
 vector<int> typeVec;  // test
 vector<double> amountVec; // test
-
+vector<int> clientIdVec; // test
 void loadTransactions(ifstream& file) {
     // declare variables for Territory
     int trxId1, saleRepId1, clientId1, trxType1, amount1;
@@ -156,6 +156,7 @@ void loadTransactions(ifstream& file) {
         mapTransaction.insert(pair<int, Transaction*> (i, t)); // insert object into map
         typeVec.push_back(trxType1); //test
         amountVec.push_back(amount1); //test
+        clientIdVec.push_back(clientId1); // test
         i++; 
     }
 
@@ -222,7 +223,7 @@ void loadSaleReps(ifstream& file) {
     }
 } // end of loadSaleReps
 
-// TEST
+
 vector<double> clientsVec;
 void calcTransaction(vector<int> type, vector<double> amount) {
     // iterate through vectors and calculate the amount depending on type
@@ -263,10 +264,16 @@ void calcTransaction(vector<int> type, vector<double> amount) {
    
 }
 
+// TEST 
+// direct output to client_output (clientID , client amount)
+void clientOutput(vector<int> ci, vector<double> ca) {
+    for (int i = 0; i < ci.size(); i++) {
+        cout << " client id is:" << ci[i] << " client amount is: " << ca[i] << endl;
+    }
 
+}
 
-// END OF TEST
-
+// END TEST
 
 int main () {
     ifstream territoryFile("territory.txt");
@@ -276,7 +283,9 @@ int main () {
     loadTransactions(trxFile);
     //for (auto i : amountVec)
     //cout << (i) << endl;
-   //loadSaleReps(saleRepFile);
+    //loadSaleReps(saleRepFile);
     calcTransaction(typeVec, amountVec);
+    cout << "client output: " << endl;
+    clientOutput(clientIdVec, clientsVec); 
     return 0;
 }
