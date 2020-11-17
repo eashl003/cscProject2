@@ -68,12 +68,12 @@ void loadTerritories(ifstream& file) {
     int territoryId;
     char comma;
     string type; 
-    int i = 0;
+    //int i = 0;
     while(  file >> territoryId >> comma >> type) {
         Territory * t = new Territory(territoryId, type);
-        mapTerritories.insert(pair<int ,Territory *> (i, t));
+        mapTerritories.insert(pair<int ,Territory *> (territoryId, t));
         territoryIdVec.push_back(territoryId);
-        i++;
+       // i++;
     }
 
     for (auto i: territoryIdVec) {
@@ -149,22 +149,24 @@ ostream & operator<<(ostream &os, Transaction& t) {
 }
 
 map<int, Transaction *> mapTransaction;
-vector<int> typeVec;  // test
-vector<double> amountVec; // test
-vector<int> clientIdVec; // test
+
+//vector<int> typeVec;  // test
+//vector<double> amountVec; // test
+//vector<int> clientIdVec; // test
 void loadTransactions(ifstream& file) {
     // declare variables for Territory
     int trxId1, saleRepId1, clientId1, trxType1, amount1;
     char comma, comma1, comma2, comma3;
-    int i = 0;
+    //int i = 0;
     // while loop to store objects
     while(file >> trxId1 >> comma >> saleRepId1 >> comma1 >> clientId1 >> comma2 >> trxType1 >> comma3 >> amount1) {
         Transaction * t = new Transaction(trxId1, saleRepId1, clientId1,trxType1, amount1);
-        mapTransaction.insert(pair<int, Transaction*> (i, t)); // insert object into map
-        typeVec.push_back(trxType1); //test
-        amountVec.push_back(amount1); //test
-        clientIdVec.push_back(clientId1); // test
-        i++; 
+        mapTransaction.insert(pair<int, Transaction*> (trxId1, t)); // insert object into map
+        
+        //typeVec.push_back(trxType1); //test
+        //amountVec.push_back(amount1); //test
+        //clientIdVec.push_back(clientId1); // test
+        //i++; 
     }
 
 
@@ -215,12 +217,12 @@ void loadSaleReps(ifstream& file) {
     char comma, comma1;
     // while loop to store objects
     SalesRep * sr;
-    int i = 0;
+   //int i = 0;
     while(file >> saleRepId >> comma >> territoryId >> comma1 >> amount) {
         // assign values to variable
         sr = new SalesRep(saleRepId, territoryId, amount);
-        mapSaleReps.insert(pair<int, SalesRep*> (i, sr)); // insert object into map   
-        i++;
+        mapSaleReps.insert(pair<int, SalesRep*> (saleRepId, sr)); // insert object into map   
+       // i++;
     }
     
     map<int, SalesRep*>::iterator it = mapSaleReps.begin();
@@ -233,8 +235,9 @@ void loadSaleReps(ifstream& file) {
 } // end of loadSaleReps
 
 
-vector<double> clientsVec; // will store clients' amount
-vector<double> territoryAmountVec; 
+//vector<double> clientsVec; // will store clients' amount
+//vector<double> territoryAmountVec; 
+/*
 void calcTransaction(vector<int> type, vector<double> amount) {
     // iterate through vectors and calculate the amount depending on type
     double territoryAmount = 0, saleRepAmount = 0, clientsAmount = 0;
@@ -271,6 +274,9 @@ void calcTransaction(vector<int> type, vector<double> amount) {
             clientsVec.push_back(clientsAmount);
             territoryAmountVec.push_back(territoryAmount);
         }
+         double clientRatio[] = {1, 1, 1, 1, 0, 1, 0};
+    double territoryRatio[] = {1, 1, 1, 1, 1, 1, 0};
+     double SaleRepRatio[] = {1.10, 1.10, -1.00, -1.25, 0, 1.10, 0.75};
     }  
 
     /*
@@ -278,8 +284,36 @@ void calcTransaction(vector<int> type, vector<double> amount) {
         cout << "territory amount: " << territoryAmountVec[i] << endl;
     }
    */
-}
 
+
+// TEST another calculate transaction function
+vector<double> clientsAmountVec; // vector to store the amount earned by client
+map<int, double> cIdAmountMap; // key = Client id, value = current amount
+void calcTransactions2(map<int, Transaction *> m){
+    // these numbers represent the mulitplicity based on one of the 7 trx types
+    double clientRatio[] = {1, 1, 1, 1, 0, 1, 0};
+    double clientAmount;
+    int transClientId;
+    // remember that the map we are going to pass in has the trxId as key and then T 
+    // for each transaction ... we need to iterator through the map
+    map<int, Transaction *>::iterator it = m.begin();
+    while( it != m.end()) {
+        // we need to get client id and amount and insert it 
+        int transactId = it->first; // first returns key so we'd like 1
+        Transaction * t = it->second; // returns transaction object
+       
+        clientAmount = t->getAmount() * clientRatio[t->getTrxType() - 1];
+        cout << clientAmount << endl;
+        cIdAmountMap.insert(pair<int, double>(t->getClientId(), clientAmount));
+        it++;   
+    }
+
+
+    // for each do something like the following  // 7
+    // saleRepAMount = trx.amount * saleRepRatio[trx.trxType - 1];
+
+}
+// END
 
 
 // direct output to client_output (clientID , client amount)
@@ -303,6 +337,16 @@ void territoryOutput(vector<int> ti, vector<double> ta) {
 
 // END TEST
 int main () {
+    /*
+    int main (int argc, char *argv[v])
+    cout << argc << endl; // argument counts
+    cout << argv[0] << endl;
+    cout << argv[1] << endl;
+    cout << argv[2] << endl;
+    ....
+    */
+
+
     freopen ("client_output.txt","w",stdout);
     ifstream territoryFile("territory.txt");
     ifstream saleRepFile("salerep.txt");
@@ -313,9 +357,10 @@ int main () {
     //for (auto i : amountVec)
     //cout << (i) << endl;
     //loadSaleReps(saleRepFile);
-    calcTransaction(typeVec, amountVec);
+    //calcTransaction(typeVec, amountVec);
     cout << "client output: " << endl;
-    clientOutput(clientIdVec, clientsVec); 
+    //clientOutput(clientIdVec, clientsVec); 
+    calcTransactions2(mapTransaction);
 
     fclose(stdout);
     return 0;
