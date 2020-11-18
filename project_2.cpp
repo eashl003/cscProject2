@@ -247,7 +247,7 @@ void loadSaleReps(ifstream& file) {
 //map<int , double> tIdAmountMap; // key is trxId and value is current amount
 multimap<int , double> cIdAmountMap; // key = Client id, value = current amount
 // m is for mapTransaction map and cia is for cInitialAmount map
-void calcTransactions2(map<int, Transaction *> m){
+void calcClientsTransactions(map<int, Transaction *> m){
     // these numbers represent the mulitplicity based on one of the 7 trx types
     double clientRatio[] = {1, 1, -1, -1, 0, -1, 0}; // array to store multiplicities 
     double ca0, sum0, sum1, sum2, sum3, sum4; // client amount and sum variables for calculating total amounts for each of the five clients
@@ -284,6 +284,86 @@ void calcTransactions2(map<int, Transaction *> m){
     cout << "1004 " << sum4 << endl;    
 } // end of calcTransaction2()
 
+vector<double> sums;
+vector<int> salesId;
+multimap<int, double> srIdAmountMap; // key is trxId and value is amount
+map<int,double> thinkofbettana; 
+void calcSaleRepsTransactions(map<int, Transaction *> m) {
+    double saleRepRatio[] = {1.10, 1.10, -1 , -1.25, 0, -1.10, 0.75};
+    double srAmount; // sale rep amount and total is for the amount earned by each sales rep
+    double sum0, sum1, sum2, sum3, sum4, sum5, sum6, sum7, sum8, sum9, sum10, sum11, sum12;
+
+    map<int, Transaction *>::iterator it = m.begin();
+    while( it != m.end()) {
+        Transaction * t = it->second; // returns transaction object
+        srAmount = t->getAmount() * saleRepRatio[t->getTrxType() - 1]; 
+        srIdAmountMap.insert(pair<int, double>(t->getSaleRepId(), srAmount));
+
+        vector<int>::iterator iv = find(salesId.begin(), salesId.end(), t->getSaleRepId());
+        if (iv == salesId.end()) {
+            salesId.push_back(t->getSaleRepId());
+        } 
+
+        it++;
+    }
+
+    typedef std::multimap<int, double>::iterator itt;
+    for (int i = 0; i < salesId.size(); i++) {
+        std::pair<itt, itt> result = cIdAmountMap.equal_range(salesId[i]);
+        for (itt it = result.first; it != result.second; it++) {
+            if (salesId[i] == 1) {
+                sum0 += it->second; // this will sum up the total about for client
+            } else if (salesId[i] == 2) {
+                sum1 += it->second; 
+                sums.push_back(sum1);
+            } else if (salesId[i] == 10) {
+                sum2 += it->second; 
+                sums.push_back(sum2);
+            } else if (salesId[i] == 11) {
+                sum3 += it->second; 
+                sums.push_back(sum3);
+            } else if (salesId[i] == 12) {
+                sum4 += it->second;
+                sums.push_back(sum4); 
+            } else if (salesId[i] == 14) {
+                sum5 += it->second; 
+                sums.push_back(sum5);
+            } else if (salesId[i] == 20) {
+                sum6 += it->second; 
+                sums.push_back(sum6);
+            } else if (salesId[i] == 21) {
+                sum7 += it->second; 
+                sums.push_back(sum7);
+            } else if (salesId[i] == 22) {
+                sum8 += it->second; 
+                sums.push_back(sum8);
+            }  else if (salesId[i] == 23) {
+                sum9 += it->second;
+                sums.push_back(sum9); 
+            } else if (salesId[i] == 24) {
+                sum10 += it->second; 
+                sums.push_back(sum10);
+            } else if (salesId[i] == 25) {
+                sum11 += it->second; 
+                sums.push_back(sum11);
+            } else if (salesId[i] == 0) {
+                sum12 += it->second;
+                sums.push_back(sum12); 
+            }
+        }
+    }
+
+
+
+    for (int i = 0; i < salesId.size(); i++) {
+        cout << salesId[i] << " sum" << sums[i] << endl;
+    }
+      
+}
+
+
+
+
 // direct output to client_output (clientID , client amount)
 void clientOutput(vector<int> ci, vector<double> ca) {
     for (int i = 0; i < ci.size(); i++) {
@@ -296,6 +376,7 @@ void clientOutput(vector<int> ci, vector<double> ca) {
 // TEST 
 // territory id and territory amount 
 void territoryOutput(vector<int> ti, vector<double> ta) {
+    
     
 }
 
@@ -325,7 +406,8 @@ int main () {
     //calcTransaction(typeVec, amountVec);
     cout << "client output: " << endl;
     //clientOutput(clientIdVec, clientsVec); 
-    calcTransactions2(mapTransaction);
+    calcClientsTransactions(mapTransaction);
+    calcSaleRepsTransactions(mapTransaction);
 
     fclose(stdout);
     return 0;
