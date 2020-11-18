@@ -244,72 +244,54 @@ void loadSaleReps(ifstream& file) {
 
 
 
-// TEST another calculate transaction function
-map<int , double> tIdAmountMap; // key is trxId and value is current amount
+//map<int , double> tIdAmountMap; // key is trxId and value is current amount
 multimap<int , double> cIdAmountMap; // key = Client id, value = current amount
 // m is for mapTransaction map and cia is for cInitialAmount map
 void calcTransactions2(map<int, Transaction *> m){
     // these numbers represent the mulitplicity based on one of the 7 trx types
     double clientRatio[] = {1, 1, -1, -1, 0, -1, 0}; // array to store multiplicities 
-    double ca0,ca1,ca2,ca3,ca4; // client amount 
-    double ca0c, ca1c, ca2c, ca3c, ca4c; // client current amount 
-    double updatedCAmount, currentAmount;
-    int caId = 0;
-    double sum = 0;
-    // remember that the map we are going to pass in has the trxId as key and then T 
-    // for each transaction ... we need to iterator through the map
-   
-    map<int, Transaction *>::iterator it = m.begin();
+    double ca0, sum0, sum1, sum2, sum3, sum4; // client amount and sum variables for calculating total amounts for each of the five clients
+
+    map<int, Transaction *>::iterator it = m.begin(); 
     while( it != m.end()) {
-        
-        // we need to get client id and amount and insert it 
-        int transactId = it->first; // first returns key so we'd like 1
+        //int transactId = it->first; // first returns key which is the transaction id
         Transaction * t = it->second; // returns transaction object
-        // store calculated client amount
-      
-        //ca = t->getAmount() * clientRatio[t->getTrxType() - 1];
-        ca0 = t->getAmount() * clientRatio[t->getTrxType() - 1];
+        ca0 = t->getAmount() * clientRatio[t->getTrxType() - 1];  // store calculated client amount in ca0
         cIdAmountMap.insert(pair<int, double>(t->getClientId(), ca0)); // this stores the first five initial amounts with client ids
         it++;
     }
-    // try to sum the values
     typedef std::multimap<int, double>::iterator itt;
-    std::pair<itt, itt> result = cIdAmountMap.equal_range(1002);
-    for (itt it = result.first; it != result.second; it++) {
-        //cout << "pls : " << it->second << endl;
-        sum += it->second;
-        cout << sum << endl;
+    for (int i = 1000; i < 1005; i++) {
+        std::pair<itt, itt> result = cIdAmountMap.equal_range(i);
+        for (itt it = result.first; it != result.second; it++) {
+            if (i == 1000) {
+                sum0 += it->second; // this will sum up the total about for client
+            } else if (i == 1001) {
+                sum1 += it->second; 
+            } else if (i == 1002) {
+                sum2 += it->second; 
+            } else if (i == 1003) {
+                sum3 += it->second; 
+            } else if (i == 1004) {
+                sum4 += it->second; 
+            }
+        }
     }
-
-
-    
-    // print it
-    map<int, double>::iterator it3 = cIdAmountMap.begin();
-    while(it3 != cIdAmountMap.end()) {
-    int cId = it3->first;
-    double cAmount = it3->second;
-    cout << " get client id: " << cId << " cAmount: " << cAmount << endl;
-    // for all equal client ids add all their amounts together 
-    it3++;
-      
-    }
-        
-}
-// END
-
-
+    cout << "1000 " << sum0 << endl; 
+    cout << "1001 " << sum1 << endl;   
+    cout << "1002 " << sum2 << endl;
+    cout << "1003 " << sum3 << endl;  
+    cout << "1004 " << sum4 << endl;    
+} // end of calcTransaction2()
 
 // direct output to client_output (clientID , client amount)
 void clientOutput(vector<int> ci, vector<double> ca) {
     for (int i = 0; i < ci.size(); i++) {
         cout << " client id is:" << ci[i] << " client amount is: " << ca[i] << endl;
     }
-
     if(ca.size()==0){
         cout<< "yes";
     }else{cout<<"no";}
-
-
 }
 // TEST 
 // territory id and territory amount 

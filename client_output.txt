@@ -11,41 +11,8 @@ load territories :
  key 1003 clientId 1003
  key 1004 clientId 1004
 client output: 
--15
-25
-75
-75
-1075
-2175
-3285
-4524
-5764
- get client id: 1000 cAmount: 5
- get client id: 1001 cAmount: 10
- get client id: 1001 cAmount: 45
- get client id: 1002 cAmount: -15
- get client id: 1002 cAmount: 40
- get client id: 1002 cAmount: 50
- get client id: 1002 cAmount: 0
- get client id: 1002 cAmount: 1000
- get client id: 1002 cAmount: 1100
- get client id: 1002 cAmount: 1110
- get client id: 1002 cAmount: 1239
- get client id: 1002 cAmount: 1240
- get client id: 1003 cAmount: -20
- get client id: 1003 cAmount: 0
- get client id: 1003 cAmount: 55
- get client id: 1003 cAmount: -80
- get client id: 1003 cAmount: 1200
- get client id: 1003 cAmount: 1230
- get client id: 1003 cAmount: 1234
- get client id: 1003 cAmount: 1235
- get client id: 1003 cAmount: 1236
- get client id: 1003 cAmount: 1237
- get client id: 1003 cAmount: 1238
- get client id: 1004 cAmount: 0
- get client id: 1004 cAmount: -30
- get client id: 1004 cAmount: 60
- get client id: 1004 cAmount: -65
- get client id: 1004 cAmount: -70
- get client id: 1004 cAmount: 0
+1000 5
+1001 55
+1002 5764
+1003 8565
+1004 -105
