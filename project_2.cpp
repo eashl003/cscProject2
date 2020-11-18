@@ -8,6 +8,8 @@
 #include <sstream>
 #include <unordered_map>
 #include <stdio.h>
+#include <iterator>
+#include <algorithm>
 // this verison prints out all three but as one obj
 
 using namespace std;
@@ -149,27 +151,33 @@ ostream & operator<<(ostream &os, Transaction& t) {
 }
 
 map<int, Transaction *> mapTransaction;
-
-//vector<int> typeVec;  // test
-//vector<double> amountVec; // test
-//vector<int> clientIdVec; // test
+map<int, double> clientIdM; // this will store the client Id as the value and 0-5 
 void loadTransactions(ifstream& file) {
     // declare variables for Territory
     int trxId1, saleRepId1, clientId1, trxType1, amount1;
     char comma, comma1, comma2, comma3;
-    //int i = 0;
+  
     // while loop to store objects
     while(file >> trxId1 >> comma >> saleRepId1 >> comma1 >> clientId1 >> comma2 >> trxType1 >> comma3 >> amount1) {
         Transaction * t = new Transaction(trxId1, saleRepId1, clientId1,trxType1, amount1);
         mapTransaction.insert(pair<int, Transaction*> (trxId1, t)); // insert object into map
-        
-        //typeVec.push_back(trxType1); //test
-        //amountVec.push_back(amount1); //test
-        //clientIdVec.push_back(clientId1); // test
-        //i++; 
     }
 
-
+    for (int i = 1000; i < 1005; i++){
+      
+        clientIdM.insert(pair<int, int>(i, i));
+        
+    }
+        // print it
+    map<int, double>::iterator it3 = clientIdM.begin();
+    while(it3 != clientIdM.end()) {
+    int cId = it3->first;
+    int cAmount = it3->second;
+    cout << " key " << cId << " clientId " << cAmount << endl;
+    // for all equal client ids add all their amounts together 
+    it3++;
+      
+    }
 
 } // end of loadTransaction
 
@@ -235,85 +243,60 @@ void loadSaleReps(ifstream& file) {
 } // end of loadSaleReps
 
 
-//vector<double> clientsVec; // will store clients' amount
-//vector<double> territoryAmountVec; 
-/*
-void calcTransaction(vector<int> type, vector<double> amount) {
-    // iterate through vectors and calculate the amount depending on type
-    double territoryAmount = 0, saleRepAmount = 0, clientsAmount = 0;
-    
-    for (int i; i< amountVec.size(); i++) {
-        if ((type[i] == 1) || (type[i] == 2) || type[i] == 6) {
-            territoryAmount = amount[i] * 1.00; // calcualte territory
-            saleRepAmount = amount[i] * 1.10; // calculate for salerep
-            clientsAmount = amount[i] * 1; // calculate for client
-            clientsVec.push_back(clientsAmount);
-            territoryAmountVec.push_back(territoryAmount);
-        } else if ( type[i] == 3) {
-            territoryAmount = amount[i] * 1; // calcualte territory
-            saleRepAmount = amount[i] * 1; // calculate for salerep
-            clientsAmount = amount[i] * 1; // calculate for client
-            clientsVec.push_back(clientsAmount);
-            territoryAmountVec.push_back(territoryAmount);
-        } else if (type[i] == 4) {
-            territoryAmount = amount[i] * 1; // calcualte territory
-            saleRepAmount = amount[i] * 1.25; // calculate for salerep
-            clientsAmount = amount[i] * 1; // calculate for client
-            clientsVec.push_back(clientsAmount);
-            territoryAmountVec.push_back(territoryAmount);
-        } else if ( type[i] == 5) {
-            territoryAmount = amount[i] * 1; // calcualte territory
-            saleRepAmount = amount[i] * 0; // calculate for salerep
-            clientsAmount = amount[i] * 0; // calculate for client
-            clientsVec.push_back(clientsAmount);
-            territoryAmountVec.push_back(territoryAmount);
-        } else if ( type[i] == 7) {
-            territoryAmount = amount[i] * 0; // calcualte territory
-            saleRepAmount = amount[i] * .75; // calculate for salerep
-            clientsAmount = amount[i] * 0; // calculate for client
-            clientsVec.push_back(clientsAmount);
-            territoryAmountVec.push_back(territoryAmount);
-        }
-         double clientRatio[] = {1, 1, 1, 1, 0, 1, 0};
-    double territoryRatio[] = {1, 1, 1, 1, 1, 1, 0};
-     double SaleRepRatio[] = {1.10, 1.10, -1.00, -1.25, 0, 1.10, 0.75};
-    }  
-
-    /*
-     for (int i = 0; i < territoryAmountVec.size(); i++) {
-        cout << "territory amount: " << territoryAmountVec[i] << endl;
-    }
-   */
-
 
 // TEST another calculate transaction function
-vector<double> clientsAmountVec; // vector to store the amount earned by client
-map<int, double> cIdAmountMap; // key = Client id, value = current amount
+map<int , double> tIdAmountMap; // key is trxId and value is current amount
+multimap<int , double> cIdAmountMap; // key = Client id, value = current amount
+// m is for mapTransaction map and cia is for cInitialAmount map
 void calcTransactions2(map<int, Transaction *> m){
     // these numbers represent the mulitplicity based on one of the 7 trx types
-    double clientRatio[] = {1, 1, 1, 1, 0, 1, 0};
-    double clientAmount;
-    int transClientId;
+    double clientRatio[] = {1, 1, -1, -1, 0, -1, 0}; // array to store multiplicities 
+    double ca0,ca1,ca2,ca3,ca4; // client amount 
+    double ca0c, ca1c, ca2c, ca3c, ca4c; // client current amount 
+    double updatedCAmount, currentAmount;
+    int caId = 0;
+    double sum = 0;
     // remember that the map we are going to pass in has the trxId as key and then T 
     // for each transaction ... we need to iterator through the map
+   
     map<int, Transaction *>::iterator it = m.begin();
     while( it != m.end()) {
+        
         // we need to get client id and amount and insert it 
         int transactId = it->first; // first returns key so we'd like 1
         Transaction * t = it->second; // returns transaction object
-       
-        clientAmount = t->getAmount() * clientRatio[t->getTrxType() - 1];
-        cout << clientAmount << endl;
-        cIdAmountMap.insert(pair<int, double>(t->getClientId(), clientAmount));
-        it++;   
+        // store calculated client amount
+      
+        //ca = t->getAmount() * clientRatio[t->getTrxType() - 1];
+        ca0 = t->getAmount() * clientRatio[t->getTrxType() - 1];
+        cIdAmountMap.insert(pair<int, double>(t->getClientId(), ca0)); // this stores the first five initial amounts with client ids
+        it++;
+    }
+    // try to sum the values
+    typedef std::multimap<int, double>::iterator itt;
+    std::pair<itt, itt> result = cIdAmountMap.equal_range(1002);
+    for (itt it = result.first; it != result.second; it++) {
+        //cout << "pls : " << it->second << endl;
+        sum += it->second;
+        cout << sum << endl;
     }
 
 
-    // for each do something like the following  // 7
-    // saleRepAMount = trx.amount * saleRepRatio[trx.trxType - 1];
-
+    
+    // print it
+    map<int, double>::iterator it3 = cIdAmountMap.begin();
+    while(it3 != cIdAmountMap.end()) {
+    int cId = it3->first;
+    double cAmount = it3->second;
+    cout << " get client id: " << cId << " cAmount: " << cAmount << endl;
+    // for all equal client ids add all their amounts together 
+    it3++;
+      
+    }
+        
 }
 // END
+
 
 
 // direct output to client_output (clientID , client amount)
