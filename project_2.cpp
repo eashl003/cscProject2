@@ -1,5 +1,3 @@
-// Elisabeth Ashley
-// Project 2 - process a set of transactions regarding a sale
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -291,7 +289,7 @@ map<int,double> thinkofbettana;
 void calcSaleRepsTransactions(map<int, Transaction *> m) {
     double saleRepRatio[] = {1.10, 1.10, -1 , -1.25, 0, -1.10, 0.75};
     double srAmount; // sale rep amount and total is for the amount earned by each sales rep
-    double sum0, sum1, sum2, sum3, sum4, sum5, sum6, sum7, sum8, sum9, sum10, sum11, sum12;
+    //double sum0, sum1, sum2, sum3, sum4, sum5, sum6, sum7, sum8, sum9, sum10, sum11, sum12;
 
     map<int, Transaction *>::iterator it = m.begin();
     while( it != m.end()) {
@@ -308,57 +306,38 @@ void calcSaleRepsTransactions(map<int, Transaction *> m) {
     }
 
     typedef std::multimap<int, double>::iterator itt;
-    for (int i = 0; i < salesId.size(); i++) {
-        std::pair<itt, itt> result = cIdAmountMap.equal_range(salesId[i]);
+    for (int i = 1; i <= salesId.size(); i++) {
+      
+        std::pair<itt, itt> result = srIdAmountMap.equal_range(salesId[i]);
+      
         for (itt it = result.first; it != result.second; it++) {
-            if (salesId[i] == 1) {
-                sum0 += it->second; // this will sum up the total about for client
-            } else if (salesId[i] == 2) {
-                sum1 += it->second; 
-                sums.push_back(sum1);
-            } else if (salesId[i] == 10) {
-                sum2 += it->second; 
-                sums.push_back(sum2);
-            } else if (salesId[i] == 11) {
-                sum3 += it->second; 
-                sums.push_back(sum3);
-            } else if (salesId[i] == 12) {
-                sum4 += it->second;
-                sums.push_back(sum4); 
-            } else if (salesId[i] == 14) {
-                sum5 += it->second; 
-                sums.push_back(sum5);
-            } else if (salesId[i] == 20) {
-                sum6 += it->second; 
-                sums.push_back(sum6);
-            } else if (salesId[i] == 21) {
-                sum7 += it->second; 
-                sums.push_back(sum7);
-            } else if (salesId[i] == 22) {
-                sum8 += it->second; 
-                sums.push_back(sum8);
-            }  else if (salesId[i] == 23) {
-                sum9 += it->second;
-                sums.push_back(sum9); 
-            } else if (salesId[i] == 24) {
-                sum10 += it->second; 
-                sums.push_back(sum10);
-            } else if (salesId[i] == 25) {
-                sum11 += it->second; 
-                sums.push_back(sum11);
-            } else if (salesId[i] == 0) {
-                sum12 += it->second;
-                sums.push_back(sum12); 
+            
+            if(salesId[i]){
+                sums.push_back(it->second);
             }
+            
         }
     }
 
 
 
     for (int i = 0; i < salesId.size(); i++) {
-        cout << salesId[i] << " sum" << sums[i] << endl;
+       cout << salesId[i] << "#---------------#"<<"total money is: " <<"#----------------#"<< sums[i] << endl;
     }
       
+}
+
+void updateSaleFile(){
+    fstream f("salesrep.txt", ios::in);
+    string line;
+    if(f.is_open()){
+        getline(f,line);
+        while(f){
+            getline(f,line);
+        }
+        f.close();
+         
+    }
 }
 
 
@@ -407,8 +386,12 @@ int main () {
     cout << "client output: " << endl;
     //clientOutput(clientIdVec, clientsVec); 
     calcClientsTransactions(mapTransaction);
-    calcSaleRepsTransactions(mapTransaction);
-
     fclose(stdout);
+    freopen ("SalesRep_output.txt","w",stdout);
+    calcSaleRepsTransactions(mapTransaction);
+    fclose(stdout);
+
+
+    
     return 0;
 }
