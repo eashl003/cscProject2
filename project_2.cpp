@@ -55,8 +55,6 @@ class Territory {
 
 }; // end of Territory class
 
-
-    
 ostream & operator<<(ostream &os, const Territory& t) {
     os << " territoryId: " << t.territoryId << " type: " << t.type << endl;
     return os;
@@ -70,19 +68,15 @@ void loadTerritories(ifstream& file) {
     int territoryId;
     char comma;
     string type; 
-    //int i = 0;
     while(  file >> territoryId >> comma >> type) {
         Territory * t = new Territory(territoryId, type);
         mapTerritories.insert(pair<int ,Territory *> (territoryId, t));
         territoryIdVec.push_back(territoryId);
-       // i++;
     }
-
     for (auto i: territoryIdVec) {
         cout << (i) << endl;
     }
 }
-    
 class Transaction {
     
     public:
@@ -137,14 +131,12 @@ class Transaction {
     }
 }; // end of Transaction class
 
-
 class Client : public Transaction {
 
     public:
         Client(int clientId, int amount);
 
 }; // end of Client class
-// should it be const?
 ostream & operator<<(ostream &os, Transaction& t) {
     os  << t.getTrxId() << ", " << t.getSaleRepId() << ", " << t.getClientId() << ", " << t.getTrxType() << ", " << t.getAmount() << endl;
     return os;
@@ -176,7 +168,6 @@ void loadTransactions(ifstream& file) {
     cout << " key " << cId << " clientId " << cAmount << endl;
     // for all equal client ids add all their amounts together 
     it3++;
-      
     }
 
 } // end of loadTransaction
@@ -210,8 +201,6 @@ class SalesRep {
 
 }; // end of SalesRep class
 
-
-// should it be const?
 ostream & operator<<(ostream &os, SalesRep& sr) {
     os  << sr.getSaleRepId() << ", " << sr.getTerritoryId() << ", " << sr.getAmount() << endl;
     return os;
@@ -242,9 +231,6 @@ void loadSaleReps(ifstream& file) {
     }
 } // end of loadSaleReps
 
-
-
-//map<int , double> tIdAmountMap; // key is trxId and value is current amount
 vector<double> csums;
 vector<int> cIds = {1000, 1001, 1002, 1003, 1004}; // client ids
 multimap<int , double> cIdAmountMap; // key = Client id, value = current amount
@@ -260,12 +246,9 @@ void calcClientsTransactions(map<int, Transaction *> m){
         Transaction * t = it->second; // returns transaction object
         ca0 = t->getAmount() * clientRatio[t->getTrxType() - 1];  // store calculated client amount in ca0
         cIdAmountMap.insert(pair<int, double>(t->getClientId(), ca0)); // this stores the first five initial amounts with client ids
-
         it++;
     }
     // total sums print
-    cout << sizeof(cIds) << "THIS <-" << endl;
-
     typedef std::multimap<int, double>::iterator itt;
     for (int i = 0; i < cIds.size(); i++) {
       
@@ -273,96 +256,52 @@ void calcClientsTransactions(map<int, Transaction *> m){
       
         for (itt it = result.first; it != result.second; it++) {
             sum0 += it->second;
-            //csums.push_back(sum0);
-           
-            
         }
         cout << "client id " << cIds[i] << " total " << sum0 << endl;
         sum0 = 0;
     }
     
-  
 } // end of calcTransaction2()
 
+vector<double> srInitialAmountVec;
 vector<double> sums;
-vector<int> salesId;
+vector<int> salesId = {1,2,10,11,12,14,20,21,22,23,24,25};
 multimap<int, double> srIdAmountMap; // key is trxId and value is amount
 map<int,double> thinkofbettana; 
-void calcSaleRepsTransactions(map<int, Transaction *> m) {
+void calcSaleRepsTransactions(map<int, Transaction *> m, map<int, SalesRep *> srmap) {
     double saleRepRatio[] = {1.10, 1.10, -1 , -1.25, 0, -1.10, 0.75};
-    double srAmount; // sale rep amount and total is for the amount earned by each sales rep
-    //double sum0, sum1, sum2, sum3, sum4, sum5, sum6, sum7, sum8, sum9, sum10, sum11, sum12;
+    double srAmount, sum, sum1, srInitialAmount; // sale rep amount and total is for the amount earned by each sales rep
 
     map<int, Transaction *>::iterator it = m.begin();
     while( it != m.end()) {
         Transaction * t = it->second; // returns transaction object
         srAmount = t->getAmount() * saleRepRatio[t->getTrxType() - 1]; 
         srIdAmountMap.insert(pair<int, double>(t->getSaleRepId(), srAmount));
-
-        vector<int>::iterator iv = find(salesId.begin(), salesId.end(), t->getSaleRepId());
-        if (iv == salesId.end()) {
-            salesId.push_back(t->getSaleRepId());
-        } 
-
         it++;
+    }
+    map<int, SalesRep *>::iterator it1 = srmap.begin();
+    while ( it1 != srmap.end()) {
+        SalesRep * sr = it1->second;
+        srInitialAmount = sr->getAmount(); // we just want the inital amount
+        srInitialAmountVec.push_back(srInitialAmount);
+        it1++;
     }
 
     typedef std::multimap<int, double>::iterator itt;
-    for (int i = 1; i <= salesId.size(); i++) {
+    for (int i = 0; i <= salesId.size(); i++) {
       
         std::pair<itt, itt> result = srIdAmountMap.equal_range(salesId[i]);
       
         for (itt it = result.first; it != result.second; it++) {
             
-            if(salesId[i]){
-                sums.push_back(it->second);
-            }
-            
+            sum += it->second;
+            sum1 = srInitialAmountVec[i] + sum;
         }
-    }
-
-
-
-    for (int i = 0; i < salesId.size(); i++) {
-       cout << salesId[i] << "#---------------#"<<"total money is: " <<"#----------------#"<< sums[i] << endl;
-    }
-      
+        cout << "sales rep id " << salesId[i] << " total " << sum1 << endl;
+        sum = 0;
+    }    
 }
 
-void updateSaleFile(){
-    fstream f("salesrep.txt", ios::in);
-    string line;
-    if(f.is_open()){
-        getline(f,line);
-        while(f){
-            getline(f,line);
-        }
-        f.close();
-         
-    }
-}
-
-
-
-
-// direct output to client_output (clientID , client amount)
-void clientOutput(vector<int> ci, vector<double> ca) {
-    for (int i = 0; i < ci.size(); i++) {
-        cout << " client id is:" << ci[i] << " client amount is: " << ca[i] << endl;
-    }
-    if(ca.size()==0){
-        cout<< "yes";
-    }else{cout<<"no";}
-}
-// TEST 
-// territory id and territory amount 
-void territoryOutput(vector<int> ti, vector<double> ta) {
-    
-    
-}
-
-
-// END TEST
 int main () {
     /*
     int main (int argc, char *argv[v])
@@ -373,7 +312,6 @@ int main () {
     ....
     */
 
-
     freopen ("client_output.txt","w",stdout);
     ifstream territoryFile("territory.txt");
     ifstream saleRepFile("salerep.txt");
@@ -381,19 +319,12 @@ int main () {
     cout << "load territories :" << endl;
     loadTerritories(territoryFile);
     loadTransactions(trxFile);
-    //for (auto i : amountVec)
-    //cout << (i) << endl;
-    //loadSaleReps(saleRepFile);
-    //calcTransaction(typeVec, amountVec);
+    loadSaleReps(saleRepFile);
     cout << "client output: " << endl;
-    //clientOutput(clientIdVec, clientsVec); 
     calcClientsTransactions(mapTransaction);
     fclose(stdout);
-    freopen ("salerep.txt","w",stdout);
-    calcSaleRepsTransactions(mapTransaction);
-    fclose(stdout);
-
-
-    
+    freopen ("salerep_outputTest.txt","w",stdout);
+    calcSaleRepsTransactions(mapTransaction, mapSaleReps);
+    fclose(stdout);    
     return 0;
 }
