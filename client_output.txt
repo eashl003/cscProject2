@@ -11,8 +11,9 @@ load territories :
  key 1003 clientId 1003
  key 1004 clientId 1004
 client output: 
-1000 5
-1001 55
-1002 5764
-1003 8565
-1004 -105
+24THIS <-
+client id 1000 total 5
+client id 1001 total 55
+client id 1002 total 5764
+client id 1003 total 8565
+client id 1004 total -105

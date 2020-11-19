@@ -8,6 +8,8 @@
 #include <stdio.h>
 #include <iterator>
 #include <algorithm>
+#include <array>
+
 // this verison prints out all three but as one obj
 
 using namespace std;
@@ -243,6 +245,8 @@ void loadSaleReps(ifstream& file) {
 
 
 //map<int , double> tIdAmountMap; // key is trxId and value is current amount
+vector<double> csums;
+vector<int> cIds = {1000, 1001, 1002, 1003, 1004}; // client ids
 multimap<int , double> cIdAmountMap; // key = Client id, value = current amount
 // m is for mapTransaction map and cia is for cInitialAmount map
 void calcClientsTransactions(map<int, Transaction *> m){
@@ -256,30 +260,28 @@ void calcClientsTransactions(map<int, Transaction *> m){
         Transaction * t = it->second; // returns transaction object
         ca0 = t->getAmount() * clientRatio[t->getTrxType() - 1];  // store calculated client amount in ca0
         cIdAmountMap.insert(pair<int, double>(t->getClientId(), ca0)); // this stores the first five initial amounts with client ids
+
         it++;
     }
+    // total sums print
+    cout << sizeof(cIds) << "THIS <-" << endl;
+
     typedef std::multimap<int, double>::iterator itt;
-    for (int i = 1000; i < 1005; i++) {
-        std::pair<itt, itt> result = cIdAmountMap.equal_range(i);
+    for (int i = 0; i < cIds.size(); i++) {
+      
+        std::pair<itt, itt> result = cIdAmountMap.equal_range(cIds[i]);
+      
         for (itt it = result.first; it != result.second; it++) {
-            if (i == 1000) {
-                sum0 += it->second; // this will sum up the total about for client
-            } else if (i == 1001) {
-                sum1 += it->second; 
-            } else if (i == 1002) {
-                sum2 += it->second; 
-            } else if (i == 1003) {
-                sum3 += it->second; 
-            } else if (i == 1004) {
-                sum4 += it->second; 
-            }
+            sum0 += it->second;
+            //csums.push_back(sum0);
+           
+            
         }
+        cout << "client id " << cIds[i] << " total " << sum0 << endl;
+        sum0 = 0;
     }
-    cout << "1000 " << sum0 << endl; 
-    cout << "1001 " << sum1 << endl;   
-    cout << "1002 " << sum2 << endl;
-    cout << "1003 " << sum3 << endl;  
-    cout << "1004 " << sum4 << endl;    
+    
+  
 } // end of calcTransaction2()
 
 vector<double> sums;
@@ -387,7 +389,7 @@ int main () {
     //clientOutput(clientIdVec, clientsVec); 
     calcClientsTransactions(mapTransaction);
     fclose(stdout);
-    freopen ("SalesRep_output.txt","w",stdout);
+    freopen ("salerep.txt","w",stdout);
     calcSaleRepsTransactions(mapTransaction);
     fclose(stdout);
 
