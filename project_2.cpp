@@ -211,7 +211,7 @@ map<int, SalesRep *> mapSaleReps;
 void loadSaleReps(ifstream& file, map<int, Territory *> tm) {
     // declare variables for Territory
     int saleRepId, amount, id1;
-    Territory * tPtr = nullptr;
+    //Territory * tPtr = nullptr;
     char comma, comma1;
     // while loop to store objects
     SalesRep * sr;
@@ -301,7 +301,7 @@ void calcSaleRepsTransactions(map<int, Transaction *> m, map<int, SalesRep *> sr
 
 
 //CALCULATE TERRITORY TRANSACTIONS
-
+vector<int> srIdKeys; // this will store all the keys that have the same valeus 
 vector<double> tsums;
 vector<int> tIds = {1,2,3,4,5,6}; // territory ids
 multimap<int,double> tIdAmountMap; // key -> territory id and value -> amount
@@ -310,8 +310,7 @@ void calcTerritoryTransactions(map<int, Transaction *> m, map<int, SalesRep *> s
     double territoryRatio[] = {1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 0};
     double tAmount, sum;
     int territoryIds, srIds; // territory ids and sales rep ids
-    SalesRep * srObj; // can we use this to get what we need?
-
+    
     map<int, Transaction *>::iterator it = m.begin();
     while(it != m.end()) {
         Transaction * t = it->second;
@@ -320,9 +319,28 @@ void calcTerritoryTransactions(map<int, Transaction *> m, map<int, SalesRep *> s
         // we want to check the salesrepId and then see what territory is associated with it??
         it++;
     } // while
+    
+    
+    // we want to check if two keys (two sales reps) have the same value ( same territory id's)
+    map<int, SalesRep *>::iterator itt = srmap.begin();
+    int value = 2;
+    while(itt != srmap.end()) {
+        int srIdNum = itt->first; // stores sales rep id
+        SalesRep * srPtr = itt->second; // the second will be the pointer to the sale rep object
+        int terrrrid = srPtr->getTerritoryPtr()->getTerritoryId();
+        // srIdNum == srPtr->getTerritoryPtr()->getTerritoryId()
+        if (terrrrid== value) {
+            srIdKeys.push_back(srIdNum);
+        } // then reset vector to zero and incretment itt
+        itt++;
+    }
+    for ( int i =0 ; i < srIdKeys.size(); i++) {
+        cout << "HIIIIIgh hopes"<< srIdKeys[i] <<  endl;
+    }
+
 
     //  we want to get amount for each of the sales reps who have the same territory id and sum it
-    multimap<int, Transaction *>::iterator it = m.begin();
+    
 
 } // END OF CALC
 
@@ -364,7 +382,7 @@ int main () {
     cout << "client output: " << endl;
 
     calcClientsTransactions(mapTransaction);
-    //calcTerritoryTransactions(mapTransaction, mapSaleReps);
+    calcTerritoryTransactions(mapTransaction, mapSaleReps);
 
 
     fclose(stdout);
