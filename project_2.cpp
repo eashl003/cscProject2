@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <numeric>
 #include <map>
 #include <sstream>
 #include <unordered_map>
@@ -301,8 +302,8 @@ void calcSaleRepsTransactions(map<int, Transaction *> m, map<int, SalesRep *> sr
 
 
 //CALCULATE TERRITORY TRANSACTIONS
-vector<int> srIdKeys; // this will store all the keys that have the same valeus 
-vector<double> tsums;
+vector<int> srIdKeys1, srIdKeys2, srIdKeys3, srIdKeys4, srIdKeys5, srIdKeys6; // this will store all the keys that have the same valeus 
+vector<double> t1sums, t2sums, t3sums, t4sums,t5sums, t6sums; // territory 1 sum 
 vector<int> tIds = {1,2,3,4,5,6}; // territory ids
 multimap<int,double> tIdAmountMap; // key -> territory id and value -> amount
 map<int, int> srIdTIdMap; // key -> sales rep id value -> territory id
@@ -310,55 +311,83 @@ void calcTerritoryTransactions(map<int, Transaction *> m, map<int, SalesRep *> s
     double territoryRatio[] = {1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 0};
     double tAmount, sum;
     int territoryIds, srIds; // territory ids and sales rep ids
-    
-    map<int, Transaction *>::iterator it = m.begin();
-    while(it != m.end()) {
-        Transaction * t = it->second;
-        tAmount = t->getAmount() * territoryRatio[t->getTrxType() -1]; // sotre calculated territory amount in tAmount
-        tIdAmountMap.insert(pair<int, double>(t->getSaleRepId(), tAmount)); // this is a multimap so we'll have multiple keys that are the same
-        // we want to check the salesrepId and then see what territory is associated with it??
-        it++;
-    } // while
-    
-    
+
     // we want to check if two keys (two sales reps) have the same value ( same territory id's)
     map<int, SalesRep *>::iterator itt = srmap.begin();
-    int value = 2;
+    
+    //vector<int> salesId = {1,2,10,11,12,14,20,21,22,23,24,25};
+
     while(itt != srmap.end()) {
         int srIdNum = itt->first; // stores sales rep id
         SalesRep * srPtr = itt->second; // the second will be the pointer to the sale rep object
         int terrrrid = srPtr->getTerritoryPtr()->getTerritoryId();
         // srIdNum == srPtr->getTerritoryPtr()->getTerritoryId()
-        if (terrrrid== value) {
-            srIdKeys.push_back(srIdNum);
-        } // then reset vector to zero and incretment itt
+        if (terrrrid == 1 ) {
+            srIdKeys1.push_back(srIdNum);
+            cout << " sale rep id " << srIdNum << " territory id " << terrrrid << endl;
+        } else if (terrrrid == 2) {
+            srIdKeys2.push_back(srIdNum);
+            cout << " sale rep id " << srIdNum << " territory id " << terrrrid << endl;
+        } else if (terrrrid == 3) {
+            srIdKeys3.push_back(srIdNum);
+            cout << " sale rep id " << srIdNum << " territory id " << terrrrid << endl;
+        } else if (terrrrid == 4) {
+            srIdKeys4.push_back(srIdNum);
+            cout << " sale rep id " << srIdNum << " territory id " << terrrrid << endl;
+        } else if (terrrrid == 5) {
+            srIdKeys5.push_back(srIdNum);
+            cout << " sale rep id " << srIdNum << " territory id " << terrrrid << endl;
+        } else if (terrrrid == 6) {
+            srIdKeys6.push_back(srIdNum);
+            cout << " sale rep id " << srIdNum << " territory id " << terrrrid << endl;
+        }
         itt++;
     }
-    for ( int i =0 ; i < srIdKeys.size(); i++) {
-        cout << "HIIIIIgh hopes"<< srIdKeys[i] <<  endl;
-    }
 
 
-    //  we want to get amount for each of the sales reps who have the same territory id and sum it
+    // calculate sum for each territory 
+    map<int, Transaction *>::iterator it = m.begin();
+    while(it != m.end()) {
+        Transaction * t = it->second;
+        tAmount = t->getAmount() * territoryRatio[t->getTrxType() -1]; // sotre calculated territory amount in tAmount
+
+        if ((find(srIdKeys1.begin(), srIdKeys1.end(), t->getSaleRepId())) != srIdKeys1.end() ) {
+            t1sums.push_back(tAmount);
+        } else if ((find(srIdKeys2.begin(), srIdKeys2.end(), t->getSaleRepId())) != srIdKeys2.end() ) {
+            t2sums.push_back(tAmount);
+        } else if ((find(srIdKeys3.begin(), srIdKeys3.end(), t->getSaleRepId())) != srIdKeys3.end() ) {
+            t3sums.push_back(tAmount);
+        } else if ((find(srIdKeys4.begin(), srIdKeys4.end(), t->getSaleRepId())) != srIdKeys4.end() ) {
+            t4sums.push_back(tAmount);
+        } else if ((find(srIdKeys5.begin(), srIdKeys5.end(), t->getSaleRepId())) != srIdKeys5.end() ) {
+            t5sums.push_back(tAmount);
+        } else if ((find(srIdKeys6.begin(), srIdKeys6.end(), t->getSaleRepId())) != srIdKeys6.end() ) {
+            t6sums.push_back(tAmount);
+        }
+       
+        it++;
+    } // while
+
+    // print territory 1 vector
+    cout << " the sum for territory one " << endl;
+    cout<<accumulate(t1sums.begin(),t1sums.end(),0) << endl;
+    cout << " the sum for territory two " << endl;
+    cout<<accumulate(t2sums.begin(),t2sums.end(),0) << endl;
+
+    cout << " the sum for territory 4 " << endl;
+    cout<<accumulate(t4sums.begin(),t4sums.end(),0) << endl;
+    cout << " the sum for territory 5 " << endl;
+    cout<<accumulate(t5sums.begin(),t5sums.end(),0) << endl;
+    cout << " the sum for territory 6 " << endl;
+    cout<<accumulate(t6sums.begin(),t6sums.end(),0) << endl;
+    cout << " the sum for territory 3 " << endl;
+    cout<<accumulate(t3sums.begin(),t3sums.end(),0) << endl;
     
 
-} // END OF CALC
 
-    /* THIS IS JUST A PRINT 
-    cout << "tIdAmountMap :" << endl;
-    map<int, double>::iterator it4 = tIdAmountMap.begin();
-       while(it4 != tIdAmountMap.end()) {
-        int cId = it4->first;
-        double cAmount = it4->second;
-        cout << " sale rep id: " << cId << " t Amount: " << cAmount << endl;
-        // for all equal client ids add all their amounts together 
-        it4++;
-    } 
- 
     
 }
 
-*/
 
 int main () {
     /*
