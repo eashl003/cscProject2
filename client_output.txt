@@ -1,39 +1,27 @@
 load territories :
+ key 1000 clientId 1000
+ key 1001 clientId 1001
+ key 1002 clientId 1002
+ key 1003 clientId 1003
+ key 1004 clientId 1004
 1
 2
 3
 4
 5
 6
- key 1000 clientId 1000
- key 1001 clientId 1001
- key 1002 clientId 1002
- key 1003 clientId 1003
- key 1004 clientId 1004
-1 : 1, 1, 31880
-
-2 : 2, 2, 33061
-
-10 : 10, 1, 40424
-
-11 : 11, 3, 42858
-
-12 : 12, 4, 40542
-
-14 : 14, 2, 44022
-
-20 : 20, 2, 49352
-
-21 : 21, 1, 51309
-
-22 : 22, 1, 55811
-
-23 : 23, 5, 56680
-
-24 : 24, 1, 54975
-
-25 : 25, 6, 85760
-
+sale rep id1 territory type NORMAL
+sale rep id2 territory type PREMIUM
+sale rep id10 territory type NORMAL
+sale rep id11 territory type PREMIUM
+sale rep id12 territory type NORMAL
+sale rep id14 territory type PREMIUM
+sale rep id20 territory type PREMIUM
+sale rep id21 territory type NORMAL
+sale rep id22 territory type NORMAL
+sale rep id23 territory type NORMAL
+sale rep id24 territory type NORMAL
+sale rep id25 territory type PREMIUM
 client output: 
 client id 1000 total 5
 client id 1001 total 55
