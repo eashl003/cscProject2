@@ -74,9 +74,7 @@ void loadTerritories(ifstream& file) {
         mapTerritories.insert(pair<int ,Territory *> (territoryId, t));
         territoryIdVec.push_back(territoryId);
     }
-    for (auto i: territoryIdVec) {
-        cout << (i) << endl;
-    }
+    
 }
 class Transaction {
     
@@ -166,7 +164,7 @@ void loadTransactions(ifstream& file) {
     while(it3 != clientIdM.end()) {
     int cId = it3->first;
     int cAmount = it3->second;
-    cout << " key " << cId << " clientId " << cAmount << endl;
+    
     // for all equal client ids add all their amounts together 
     it3++;
     }
@@ -222,7 +220,7 @@ void loadSaleReps(ifstream& file, map<int, Territory *> tm) {
             sr = new SalesRep(saleRepId, tptr, amount);
             mapSaleReps.insert(pair<int, SalesRep*> (saleRepId, sr)); // insert object into map  
         
-            cout << "sale rep id" << sr->getSaleRepId() << " territory type " << sr->getTerritoryPtr()->getType() << endl; 
+             
           
         }  
 }// end load sale reps
@@ -319,22 +317,22 @@ void calcTerritoryTransactions(map<int, Transaction *> m, map<int, SalesRep *> s
         int terrrrid = srPtr->getTerritoryPtr()->getTerritoryId();
         if (terrrrid == 1 ) {
             srIdKeys1.push_back(srIdNum);
-            cout << " sale rep id " << srIdNum << " territory id " << terrrrid << endl;
+            
         } else if (terrrrid == 2) {
             srIdKeys2.push_back(srIdNum);
-            cout << " sale rep id " << srIdNum << " territory id " << terrrrid << endl;
+            
         } else if (terrrrid == 3) {
             srIdKeys3.push_back(srIdNum);
-            cout << " sale rep id " << srIdNum << " territory id " << terrrrid << endl;
+            
         } else if (terrrrid == 4) {
             srIdKeys4.push_back(srIdNum);
-            cout << " sale rep id " << srIdNum << " territory id " << terrrrid << endl;
+            
         } else if (terrrrid == 5) {
             srIdKeys5.push_back(srIdNum);
-            cout << " sale rep id " << srIdNum << " territory id " << terrrrid << endl;
+           
         } else if (terrrrid == 6) {
             srIdKeys6.push_back(srIdNum);
-            cout << " sale rep id " << srIdNum << " territory id " << terrrrid << endl;
+           
         }
         itt++;
     }
@@ -389,7 +387,7 @@ int main () {
     ifstream territoryFile("territory.txt");
     ifstream saleRepFile("salerep.txt");
     ifstream trxFile("transaction.txt");
-    cout << "load territories :" << endl;
+    
  
     loadTransactions(trxFile);
     loadTerritories(territoryFile);
