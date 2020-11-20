@@ -1,54 +1,5 @@
-load territories :
- key 1000 clientId 1000
- key 1001 clientId 1001
- key 1002 clientId 1002
- key 1003 clientId 1003
- key 1004 clientId 1004
-1
-2
-3
-4
-5
-6
-sale rep id1 territory type NORMAL
-sale rep id2 territory type PREMIUM
-sale rep id10 territory type NORMAL
-sale rep id11 territory type PREMIUM
-sale rep id12 territory type NORMAL
-sale rep id14 territory type PREMIUM
-sale rep id20 territory type PREMIUM
-sale rep id21 territory type NORMAL
-sale rep id22 territory type NORMAL
-sale rep id23 territory type NORMAL
-sale rep id24 territory type NORMAL
-sale rep id25 territory type PREMIUM
-client output: 
 client id 1000 total 5
 client id 1001 total 55
 client id 1002 total 5764
 client id 1003 total 8565
 client id 1004 total -105
- sale rep id 1 territory id 1
- sale rep id 2 territory id 2
- sale rep id 10 territory id 1
- sale rep id 11 territory id 3
- sale rep id 12 territory id 4
- sale rep id 14 territory id 2
- sale rep id 20 territory id 2
- sale rep id 21 territory id 1
- sale rep id 22 territory id 1
- sale rep id 23 territory id 5
- sale rep id 24 territory id 1
- sale rep id 25 territory id 6
- the sum for territory one 
-6052
- the sum for territory two 
-3754
- the sum for territory 4 
-1335
- the sum for territory 5 
-1343
- the sum for territory 6 
-1240
- the sum for territory 3 
-1220

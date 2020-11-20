@@ -311,17 +311,12 @@ void calcTerritoryTransactions(map<int, Transaction *> m, map<int, SalesRep *> s
     double territoryRatio[] = {1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 0};
     double tAmount, sum;
     int territoryIds, srIds; // territory ids and sales rep ids
-
     // we want to check if two keys (two sales reps) have the same value ( same territory id's)
     map<int, SalesRep *>::iterator itt = srmap.begin();
-    
-    //vector<int> salesId = {1,2,10,11,12,14,20,21,22,23,24,25};
-
     while(itt != srmap.end()) {
         int srIdNum = itt->first; // stores sales rep id
         SalesRep * srPtr = itt->second; // the second will be the pointer to the sale rep object
         int terrrrid = srPtr->getTerritoryPtr()->getTerritoryId();
-        // srIdNum == srPtr->getTerritoryPtr()->getTerritoryId()
         if (terrrrid == 1 ) {
             srIdKeys1.push_back(srIdNum);
             cout << " sale rep id " << srIdNum << " territory id " << terrrrid << endl;
@@ -343,14 +338,11 @@ void calcTerritoryTransactions(map<int, Transaction *> m, map<int, SalesRep *> s
         }
         itt++;
     }
-
-
     // calculate sum for each territory 
     map<int, Transaction *>::iterator it = m.begin();
     while(it != m.end()) {
         Transaction * t = it->second;
         tAmount = t->getAmount() * territoryRatio[t->getTrxType() -1]; // sotre calculated territory amount in tAmount
-
         if ((find(srIdKeys1.begin(), srIdKeys1.end(), t->getSaleRepId())) != srIdKeys1.end() ) {
             t1sums.push_back(tAmount);
         } else if ((find(srIdKeys2.begin(), srIdKeys2.end(), t->getSaleRepId())) != srIdKeys2.end() ) {
@@ -364,16 +356,14 @@ void calcTerritoryTransactions(map<int, Transaction *> m, map<int, SalesRep *> s
         } else if ((find(srIdKeys6.begin(), srIdKeys6.end(), t->getSaleRepId())) != srIdKeys6.end() ) {
             t6sums.push_back(tAmount);
         }
-       
         it++;
     } // while
 
-    // print territory 1 vector
+    
     cout << " the sum for territory one " << endl;
     cout<<accumulate(t1sums.begin(),t1sums.end(),0) << endl;
     cout << " the sum for territory two " << endl;
     cout<<accumulate(t2sums.begin(),t2sums.end(),0) << endl;
-
     cout << " the sum for territory 4 " << endl;
     cout<<accumulate(t4sums.begin(),t4sums.end(),0) << endl;
     cout << " the sum for territory 5 " << endl;
@@ -382,10 +372,6 @@ void calcTerritoryTransactions(map<int, Transaction *> m, map<int, SalesRep *> s
     cout<<accumulate(t6sums.begin(),t6sums.end(),0) << endl;
     cout << " the sum for territory 3 " << endl;
     cout<<accumulate(t3sums.begin(),t3sums.end(),0) << endl;
-    
-
-
-    
 }
 
 
@@ -399,7 +385,7 @@ int main () {
     ....
     */
 
-    freopen ("client_output.txt","w",stdout);
+
     ifstream territoryFile("territory.txt");
     ifstream saleRepFile("salerep.txt");
     ifstream trxFile("transaction.txt");
@@ -408,17 +394,18 @@ int main () {
     loadTransactions(trxFile);
     loadTerritories(territoryFile);
     loadSaleReps(saleRepFile,  mapTerritories); 
-    cout << "client output: " << endl;
-
+    
+    freopen ("client_output.txt","w",stdout);
     calcClientsTransactions(mapTransaction);
-    calcTerritoryTransactions(mapTransaction, mapSaleReps);
-
-
     fclose(stdout);
 
 
     freopen ("salerep_outputTest.txt","w",stdout);
     calcSaleRepsTransactions(mapTransaction, mapSaleReps);
-    fclose(stdout);    
+    fclose(stdout);
+
+    freopen ("territory_output.txt","w",stdout);
+    calcTerritoryTransactions(mapTransaction, mapSaleReps);
+    fclose(stdout);
     return 0;
 }
