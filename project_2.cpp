@@ -73,8 +73,7 @@ void loadTerritories(ifstream& file) {
         Territory * t = new Territory(territoryId, type);
         mapTerritories.insert(pair<int ,Territory *> (territoryId, t));
         territoryIdVec.push_back(territoryId);
-    }
-    
+    }    
 }
 class Transaction {
     
@@ -218,10 +217,7 @@ void loadSaleReps(ifstream& file, map<int, Territory *> tm) {
         while(file >> saleRepId >> comma >> id1 >> comma1 >> amount) {
             Territory * tptr = mapTerritories.at(id1); // we are getting the territory with this current key
             sr = new SalesRep(saleRepId, tptr, amount);
-            mapSaleReps.insert(pair<int, SalesRep*> (saleRepId, sr)); // insert object into map  
-        
-             
-          
+            mapSaleReps.insert(pair<int, SalesRep*> (saleRepId, sr)); // insert object into map     
         }  
 }// end load sale reps
  
@@ -277,27 +273,28 @@ void calcSaleRepsTransactions(map<int, Transaction *> m, map<int, SalesRep *> sr
     map<int, SalesRep *>::iterator it1 = srmap.begin();
     while ( it1 != srmap.end()) {
         SalesRep * sr = it1->second;
-        srInitialAmount = sr->getAmount(); // we just want the inital amount
-        srInitialAmountVec.push_back(srInitialAmount);
+        if ((sr->getTerritoryPtr()->getType()) == "PREMIUM") {// TEST
+            srInitialAmount = sr->getAmount() *2; // we just want the inital amount
+            srInitialAmountVec.push_back(srInitialAmount);
+        } else {
+            srInitialAmount = sr->getAmount(); // we just want the inital amount
+            srInitialAmountVec.push_back(srInitialAmount);
+        }
         it1++;
     }
-
-
     typedef std::multimap<int, double>::iterator itt;
     for (int i = 0; i <= salesId.size(); i++) {
-      
         std::pair<itt, itt> result = srIdAmountMap.equal_range(salesId[i]);
-      
         for (itt it = result.first; it != result.second; it++) {
             
             sum += it->second;
+            // if premium than sum * 2
             sum1 = srInitialAmountVec[i] + sum;
         }
         cout << "sales rep id " << salesId[i] << " total " << sum1 << endl;
         sum = 0;
     }    
 }
-
 
 //CALCULATE TERRITORY TRANSACTIONS
 vector<int> srIdKeys1, srIdKeys2, srIdKeys3, srIdKeys4, srIdKeys5, srIdKeys6; // this will store all the keys that have the same valeus 
@@ -357,7 +354,6 @@ void calcTerritoryTransactions(map<int, Transaction *> m, map<int, SalesRep *> s
         it++;
     } // while
 
-    
     cout << " the sum for territory one " << endl;
     cout<<accumulate(t1sums.begin(),t1sums.end(),0) << endl;
     cout << " the sum for territory two " << endl;
@@ -373,37 +369,40 @@ void calcTerritoryTransactions(map<int, Transaction *> m, map<int, SalesRep *> s
 }
 
 
-int main () {
-    /*
-    int main (int argc, char *argv[v])
-    cout << argc << endl; // argument counts
-    cout << argv[0] << endl;
-    cout << argv[1] << endl;
-    cout << argv[2] << endl;
-    ....
-    */
+int main (int argc, char *argv[]) {
+   
+    argv[0] = "./project_2";
 
+    char* territoryInput = argv[1];
+    ifstream territoryFile(territoryInput); // territory.txt
 
-    ifstream territoryFile("territory.txt");
-    ifstream saleRepFile("salerep.txt");
-    ifstream trxFile("transaction.txt");
-    
- 
+    char* srInput = argv[2];
+    ifstream srFile(srInput); // territory.txt
+
+    char* trxInput = argv[3];
+    ifstream trxFile(trxInput); // territory.txt
+
     loadTransactions(trxFile);
     loadTerritories(territoryFile);
-    loadSaleReps(saleRepFile,  mapTerritories); 
+    loadSaleReps(srFile,  mapTerritories); 
     
-    freopen ("client_output.txt","w",stdout);
+    char* territoryOutput = argv[5];
+    
+    freopen (territoryOutput,"w",stdout);
+    calcTerritoryTransactions(mapTransaction, mapSaleReps);
+    fclose(stdout);
+
+    char* clientOutput = argv[6];
+    freopen (clientOutput,"w",stdout);
     calcClientsTransactions(mapTransaction);
     fclose(stdout);
 
-
-    freopen ("salerep_outputTest.txt","w",stdout);
+    char* saleRepOutput = argv[7];
+    freopen (saleRepOutput,"w",stdout);
     calcSaleRepsTransactions(mapTransaction, mapSaleReps);
     fclose(stdout);
 
-    freopen ("territory_output.txt","w",stdout);
-    calcTerritoryTransactions(mapTransaction, mapSaleReps);
-    fclose(stdout);
+   
     return 0;
+
 }

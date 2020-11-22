@@ -1,5 +1,12 @@
-client id 1000 total 5
-client id 1001 total 55
-client id 1002 total 5764
-client id 1003 total 8565
-client id 1004 total -105
+ the sum for territory one 
+6052
+ the sum for territory two 
+3754
+ the sum for territory 4 
+1335
+ the sum for territory 5 
+1343
+ the sum for territory 6 
+1240
+ the sum for territory 3 
+1220
