@@ -308,27 +308,39 @@ void calcTerritoryTransactions(map<int, Transaction *> m, map<int, SalesRep *> s
     cout<< setfill('0') << setw(7) <<accumulate(t3sums.begin(),t3sums.end(),0) << endl;
 }
 
+int main (int argc, char *argv[]) {
+   
+    argv[0] = "./project_2";
 
-int main () {
-    ifstream territoryFile("territory.txt");
-    ifstream saleRepFile("salerep.txt");
-    ifstream trxFile("transaction.txt");
-    cout << "load territories :" << endl;
- 
+    char* territoryInput = argv[1];
+    ifstream territoryFile(territoryInput); // territory.txt
+
+    char* srInput = argv[2];
+    ifstream srFile(srInput); // territory.txt
+
+    char* trxInput = argv[3];
+    ifstream trxFile(trxInput); // territory.txt
+
     loadTransactions(trxFile);
     loadTerritories(territoryFile);
-    loadSaleReps(saleRepFile,  mapTerritories); 
+    loadSaleReps(srFile,  mapTerritories); 
     
-    freopen ("client_output.txt","w",stdout);
+    char* territoryOutput = argv[4];
+    
+    freopen (territoryOutput,"w",stdout);
+    calcTerritoryTransactions(mapTransaction, mapSaleReps);
+    fclose(stdout);
+
+    char* clientOutput = argv[5];
+    freopen (clientOutput,"w",stdout);
     calcClientsTransactions(mapTransaction);
     fclose(stdout);
 
-    freopen ("salerep.txt","w",stdout);
+    freopen (srInput,"w",stdout);
     calcSaleRepsTransactions(mapTransaction, mapSaleReps);
     fclose(stdout);
 
-    freopen ("territory_output.txt","w",stdout);
-    calcTerritoryTransactions(mapTransaction, mapSaleReps);
-    fclose(stdout);
+   
     return 0;
+
 }
