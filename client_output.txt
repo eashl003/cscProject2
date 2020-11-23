@@ -1,5 +1,5 @@
-client id 1000 total 5
-client id 1001 total 55
-client id 1002 total 5764
-client id 1003 total 8565
-client id 1004 total -105
+01000,0000005
+01001,0000055
+01002,0005764
+01003,0008565
+01004,000-105
