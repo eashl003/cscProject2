@@ -357,10 +357,10 @@ void calcTerritoryTransactions(map<int, Transaction *> m, map<int, SalesRep *> s
             t6sums.push_back(tAmount);
         }
         it++;
-    } // while
-
+    } // while // 
+ 
     
-    cout << " the sum for territory one " << endl;
+    cout << " the sum for territory onee " << endl;
     cout<<accumulate(t1sums.begin(),t1sums.end(),0) << endl;
     cout << " the sum for territory two " << endl;
     cout<<accumulate(t2sums.begin(),t2sums.end(),0) << endl;
