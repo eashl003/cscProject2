@@ -47,7 +47,6 @@ class Territory {
 }; // end of Territory class
 
 map<int, Territory *> mapTerritories; // global map so you can have access outside this function
-vector<int> territoryIdVec;
 // function that creates a vector of territory ids and a map that maps Territory id's to a Territory ptr
 void loadTerritories(ifstream& file) {
     string line, type; 
@@ -56,8 +55,7 @@ void loadTerritories(ifstream& file) {
     // this will store the lines of the code into variable names
     while( file >> territoryId >> comma >> type) {
         Territory * t = new Territory(territoryId, type); // this will create a new pointer to a Territory object
-        mapTerritories.insert(pair<int ,Territory *> (territoryId, t)); 
-        territoryIdVec.push_back(territoryId); 
+        mapTerritories.insert(pair<int ,Territory *> (territoryId, t)); // insert id and pointer to object
     }
 }
 class Transaction {
@@ -116,7 +114,6 @@ class Client : public Transaction {
 }; // end of Client class
 
 map<int, Transaction *> mapTransaction; // maps Transaction Id to Transaction pointer
-map<int, double> clientIdM; 
 void loadTransactions(ifstream& file) {
     // declare variables for Territory
     int trxId1, saleRepId1, clientId1, trxType1, amount1;
@@ -125,9 +122,6 @@ void loadTransactions(ifstream& file) {
     while(file >> trxId1 >> comma >> saleRepId1 >> comma1 >> clientId1 >> comma2 >> trxType1 >> comma3 >> amount1) {
         Transaction * t = new Transaction(trxId1, saleRepId1, clientId1,trxType1, amount1); // creates pointer to transaction object
         mapTransaction.insert(pair<int, Transaction*> (trxId1, t)); // insert object into map
-    }
-    for (int i = 1000; i < 1005; i++){
-        clientIdM.insert(pair<int, int>(i, i));
     }
 } // end of loadTransaction
 
@@ -156,16 +150,9 @@ class SalesRep {
         }
 }; // end of SalesRep class
 
-ostream & operator<<(ostream &os, SalesRep& sr) {
-    os  << sr.getSaleRepId() << ", " << sr.getTerritoryPtr() << ", " << sr.getAmount() << endl;
-    return os;
-}
-
-
 map<int, SalesRep *> mapSaleReps; // maps salerep id to SaleRep pointer to object
 void loadSaleReps(ifstream& file, map<int, Territory *> tm) {
     int saleRepId, amount, terId;  // declare variables for Territory
-    //Territory * tPtr = nullptr;
     char comma, comma1;
     // while loop to store objects
     while(file >> saleRepId >> comma >> terId >> comma1 >> amount) {
@@ -175,13 +162,11 @@ void loadSaleReps(ifstream& file, map<int, Territory *> tm) {
     }  
 }// end load sale reps
  
-
 multimap<int , int> cIdAmountMap; // key = Client id, value = current amount
 void calcClientsTransactions(map<int, Transaction *> m){
     // these numbers represent the mulitplicity based on one of the 7 trx types
     double clientRatio[] = {1, 1, -1, -1, 0, -1, 0}; // array to store multiplicities 
     double ca0, sum0; 
-    vector<double> csums;
     vector<int> cIds = {1000, 1001, 1002, 1003, 1004}; // client ids
     
     map<int, Transaction *>::iterator it = m.begin(); 
