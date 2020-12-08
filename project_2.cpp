@@ -1,4 +1,4 @@
-// Elisabeth Ashley and Naol Legesse
+// Elisabeth Ashley, Naol Legesse, Meron Mengistu
 // Project 2 
 #include <iostream>
 #include <fstream>
@@ -24,11 +24,12 @@ class Territory {
     
     public:
     Territory();
-
+    // parameterized constructor
     Territory(int territoryId, string type){
         this -> territoryId = territoryId;
         this -> type = type;
     }
+
     // setters:
     void setTerritoryId(int territoryId) {
         this -> territoryId = territoryId;
@@ -55,16 +56,17 @@ void loadTerritories(ifstream& file) {
     // this will store the lines of the code into variable names
     while( file >> territoryId >> comma >> type) {
         Territory * t = new Territory(territoryId, type); // this will create a new pointer to a Territory object
-        mapTerritories.insert(pair<int ,Territory *> (territoryId, t)); // insert id and pointer to object
+        mapTerritories.insert(pair<int ,Territory *> (territoryId, t)); // insert id and pointer to Territory object
     }
 }
 class Transaction {
     
     public:
+        // declare variables for transaction class
         int trxId, saleRepId, clientId, trxType, amount; 
 
-   Transaction();
-
+    Transaction();
+    // parameterized constructor
     Transaction(int trxId, int saleRepId, int clientId, int trxType, int amount) {
         this -> trxId = trxId;
         this -> saleRepId = saleRepId;
@@ -130,8 +132,8 @@ class SalesRep {
     private:
         int saleRepId;
         int amount; 
-        Territory * territoryPtr = nullptr;  // create a pointer to territory so i can refer directly to territory if i know what SaleRep it is
-
+        Territory * territoryPtr = nullptr;  // create a pointer to territory so we can refer directly to territory if we know what SaleRep it is
+        // this will help when we have to do the calculations for the territories
     public:
         SalesRep(int saleRepId, Territory * territoryPtr, int amount) {
             this -> saleRepId = saleRepId;
@@ -156,23 +158,25 @@ void loadSaleReps(ifstream& file, map<int, Territory *> tm) {
     char comma, comma1;
     // while loop to store objects
     while(file >> saleRepId >> comma >> terId >> comma1 >> amount) {
-        Territory * tptr = mapTerritories.at(terId); // we are getting the territory with this current key
-        SalesRep * sr = new SalesRep(saleRepId, tptr, amount);
+        Territory * tptr = mapTerritories.at(terId); // we are getting the territory with this current key, accessing via mapTerritories
+        SalesRep * sr = new SalesRep(saleRepId, tptr, amount); // create new sales rep, with ptr to Territory object
         mapSaleReps.insert(pair<int, SalesRep*> (saleRepId, sr)); // insert object into map  
     }  
 }// end load sale reps
  
+// now for calculations
 multimap<int , int> cIdAmountMap; // key = Client id, value = current amount
 void calcClientsTransactions(map<int, Transaction *> m){
     // these numbers represent the mulitplicity based on one of the 7 trx types
     double clientRatio[] = {1, 1, -1, -1, 0, -1, 0}; // array to store multiplicities 
-    double ca0, sum0; 
+    double ca0, sum0; // ca stands for client amount 
     vector<int> cIds = {1000, 1001, 1002, 1003, 1004}; // client ids
     
     map<int, Transaction *>::iterator it = m.begin(); 
     while( it != m.end()) {
         //int transactId = it->first; // first returns key which is the transaction id
         Transaction * t = it->second; // returns transaction object
+        // t -> getAmount() will get the amount of that transaction than multiply it by the correct ratio depending on its type
         ca0 = t->getAmount() * clientRatio[t->getTrxType() - 1];  // store calculated client amount in ca0
         cIdAmountMap.insert(pair<int, double>(t->getClientId(), ca0)); // this stores the first five initial amounts with client ids
         it++;
@@ -182,10 +186,10 @@ void calcClientsTransactions(map<int, Transaction *> m){
     for (int i = 0; i < cIds.size(); i++) {
         std::pair<itt, itt> result = cIdAmountMap.equal_range(cIds[i]);
         for (itt it = result.first; it != result.second; it++) {
-            sum0 += it->second;
+            sum0 += it->second; // this will essentially generate the overall totals for each client
         }
-        cout  << setfill('0') << setw(5) << cIds[i] << "," << setfill('0') << setw(7) << sum0 << endl;
-        sum0 = 0;
+        cout  << setfill('0') << setw(5) << cIds[i] << "," << setfill('0') << setw(7) << sum0 << endl; // left fill with zeros
+        sum0 = 0; // reset sum
     }
 } // end of calcTransaction2()
 
@@ -193,43 +197,44 @@ multimap<int, int> srIdAmountMap; // key is trxId and value is amount
 void calcSaleRepsTransactions(map<int, Transaction *> m, map<int, SalesRep *> srmap) {
     double saleRepRatio[] = {1.10, 1.10, -1 , -1.25, 0, -1.10, 0.75};
     double srAmount, sum, sum1, srInitialAmount; // sale rep amount and total is for the amount earned by each sales rep
-    vector<double> srInitialAmountVec;
+    vector<double> srInitialAmountVec; // vector to store sale reps initial amounts
     vector<double> sums;
-    vector<int> salesId = {1,2,10,11,12,14,20,21,22,23,24,25};
+    vector<int> salesId = {1,2,10,11,12,14,20,21,22,23,24,25}; // vector for all the sale rep ids
 
     map<int, Transaction *>::iterator it = m.begin();
     while( it != m.end()) {
         Transaction * t = it->second; // returns transaction object
-        srAmount = t->getAmount() * saleRepRatio[t->getTrxType() - 1]; 
-        srIdAmountMap.insert(pair<int, int>(t->getSaleRepId(), srAmount));
-        it++;
+        srAmount = t->getAmount() * saleRepRatio[t->getTrxType() - 1]; // calculate salerep amount by getting t's amount and multiplying it by salesRepRatio
+        srIdAmountMap.insert(pair<int, int>(t->getSaleRepId(), srAmount)); // insert sale rep amount with sale rep id into map
+        it++; // increment iterator
     }
-    map<int, SalesRep *>::iterator it1 = srmap.begin();
+    map<int, SalesRep *>::iterator it1 = srmap.begin(); // now iterate through the sales rep map we created earlier
     while ( it1 != srmap.end()) {
-        SalesRep * sr = it1->second;
+        SalesRep * sr = it1->second; // getting the ptr to SalesRep obect
         srInitialAmount = sr->getAmount(); // we just want the inital amount
-        srInitialAmountVec.push_back(srInitialAmount);
-        it1++;
+        srInitialAmountVec.push_back(srInitialAmount); // there are 12 different initial values
+        it1++; // increment iterator
     }
 
     typedef std::multimap<int, int>::iterator itt;
     for (int i = 0; i <= salesId.size()-1; i++) {
       
-        std::pair<itt, itt> result = srIdAmountMap.equal_range(salesId[i]);
-      
+        std::pair<itt, itt> result = srIdAmountMap.equal_range(salesId[i]); // map::equal_range returns the bounds of range that include all 
+        // elemnts in the container which have a key equivalent to salesId at the index i
+
         for (itt it = result.first; it != result.second; it++) {
             
-            sum += it->second;
-            sum1 = srInitialAmountVec[i] + sum;
+            sum += it->second; // get srAmount
+            sum1 = srInitialAmountVec[i] + sum; // now add the newly calculated sum to sum1
         }
         cout << setfill('0') << setw(5) << salesId[i] << "," << setfill('0') << setw(7)<< sum1 << endl;
-        sum = 0;
+        sum = 0; // reset sum so you don't have to have 12 different sum variables, just the one
     }    
 }
 
 //CALCULATE TERRITORY TRANSACTIONS
-vector<int> srIdKeys1, srIdKeys2, srIdKeys3, srIdKeys4, srIdKeys5, srIdKeys6; // this will store all the keys that have the same valeus 
-vector<double> t1sums, t2sums, t3sums, t4sums,t5sums, t6sums; // territory 1 sum 
+vector<int> srIdKeys1, srIdKeys2, srIdKeys3, srIdKeys4, srIdKeys5, srIdKeys6; // this will store all the keys that have the same values 
+vector<double> t1sums, t2sums, t3sums, t4sums,t5sums, t6sums; // territory sums - 6 territories
 vector<int> tIds = {1,2,3,4,5,6}; // territory ids
 multimap<int,double> tIdAmountMap; // key -> territory id and value -> amount
 map<int, int> srIdTIdMap; // key -> sales rep id value -> territory id
@@ -237,16 +242,21 @@ void calcTerritoryTransactions(map<int, Transaction *> m, map<int, SalesRep *> s
     double territoryRatio[] = {1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 0};
     double tAmount, sum;
     int territoryIds, srIds; // territory ids and sales rep ids
-    // we want to check if two keys (two sales reps) have the same value ( same territory id's)
-    map<int, SalesRep *>::iterator itt = srmap.begin();
-    while(itt != srmap.end()) {
+    // we want to check if keys (aka sales reps) have the same territory id's
+    // for example sales reps - 2, 14, and 20 have the same territory ids (2) so essentially what we do is check
+    // the line in the transaction file and see the sales rep id, then we check to see what territory is associated with that
+    // sales rep, then we can check and see if that territory is premium or normal, caclulate amount and add it to 
+    // whichever territory 
+    map<int, SalesRep *>::iterator itt = srmap.begin(); // iterate through sales rep map which we generated from salerep.txt
+    while(itt != srmap.end()) { // while map isn't empty
         int srIdNum = itt->first; // stores sales rep id
         SalesRep * srPtr = itt->second; // the second will be the pointer to the sale rep object
-        int terrrrid = srPtr->getTerritoryPtr()->getTerritoryId();
+        int terrrrid = srPtr->getTerritoryPtr()->getTerritoryId(); // now the sick thing is we can access the territory's id via the territory pointer via our sales rep
         if (terrrrid == 1 ) {
-            srIdKeys1.push_back(srIdNum);
+            srIdKeys1.push_back(srIdNum); // now if the territory id is 1 we push back that sales rep id number at this line
         } else if (terrrrid == 2) {
-            srIdKeys2.push_back(srIdNum);
+            srIdKeys2.push_back(srIdNum); // now if the territory id is 2 we push back that sales rep id number etc...
+            // so this will have sales reps with the ids 2, 14 and 20
         } else if (terrrrid == 3) {
             srIdKeys3.push_back(srIdNum);
         } else if (terrrrid == 4) {
@@ -256,15 +266,16 @@ void calcTerritoryTransactions(map<int, Transaction *> m, map<int, SalesRep *> s
         } else if (terrrrid == 6) {
             srIdKeys6.push_back(srIdNum);
         }
-        itt++;
+        itt++; // increment iterator
     }
     // calculate sum for each territory 
+    // find will find elment in vector, so (vec.begin(), vec.end(), itemtofind != vec.end())
     map<int, Transaction *>::iterator it = m.begin();
     while(it != m.end()) {
-        Transaction * t = it->second;
-        tAmount = t->getAmount() * territoryRatio[t->getTrxType() -1]; // sotre calculated territory amount in tAmount
+        Transaction * t = it->second; // pointer to transaction object
+        tAmount = t->getAmount() * territoryRatio[t->getTrxType() -1]; // store calculated territory amount in tAmount
         if ((find(srIdKeys1.begin(), srIdKeys1.end(), t->getSaleRepId())) != srIdKeys1.end() ) {
-            t1sums.push_back(tAmount);
+            t1sums.push_back(tAmount); // so if the sales rep id is is in that we push back tAmount for the  territory
         } else if ((find(srIdKeys2.begin(), srIdKeys2.end(), t->getSaleRepId())) != srIdKeys2.end() ) {
             t2sums.push_back(tAmount);
         } else if ((find(srIdKeys3.begin(), srIdKeys3.end(), t->getSaleRepId())) != srIdKeys3.end() ) {
@@ -278,7 +289,7 @@ void calcTerritoryTransactions(map<int, Transaction *> m, map<int, SalesRep *> s
         }
         it++;
     } 
- 
+    // accumlate returns the result of adding all the values in the range
     cout << setfill('0') << setw(6)<< "1,";
     cout<< setfill('0') << setw(7) << accumulate(t1sums.begin(),t1sums.end(),0) << endl;
     cout << setfill('0') << setw(6)<< "2,";
